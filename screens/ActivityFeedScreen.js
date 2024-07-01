@@ -11,6 +11,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { fetchActivityInProgress, getRoleBasedOnToken } from '../api';
 import {useNavigation} from '@react-navigation/native';
+import { Entypo } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 
 export const ActivityFeedScreen = () => {
@@ -58,8 +60,16 @@ export const ActivityFeedScreen = () => {
               />
               <View  style={{ margin: 10 }}>
                 <Text style={styles.activityTitle}>{item.name}</Text>
-                <Text>{item.companyDto.name}</Text>
-                <Text>{item.locations && item.locations.length > 0 ? item.locations[0].address : 'No location available'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <FontAwesome5 name="house-user" size={16} color="black" style={{paddingRight:4}} />
+                  <Text>{item.companyDto.name}</Text>
+                </View >
+                {item.locations[0] && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Entypo name="location" size={16} color="black" style={{paddingRight:4}} />
+                    <Text> {item.locations[0].address} </Text>
+                  </View>
+                )}
               </View>
             </View>
           </TouchableOpacity>

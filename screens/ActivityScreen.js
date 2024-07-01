@@ -39,9 +39,10 @@ export const ActivityScreen = (props) => {
             <View style={{width:'100%'}}>
               <Text style={styles.title}>{activity.name}</Text>
               <Text style={{ color: '#FF7F50' }}>{activity.activityType}</Text>
-              <Text>{activity.companyDto.name}</Text>
+              <Text style={{marginBottom: 20}}>By {activity.companyDto.name}</Text>
               <Text>Inicio: {activity.startDate}</Text>
               <Text>Fin: {activity.endDate}</Text>
+              <Text style={{fontWeight:'bold', marginTop:20}}>Ubicación: </Text>
               <Text>{activity.locations && activity.locations.length > 0 ? activity.locations[0].address : 'No location available'}</Text>
             </View>
             {activity.locations[0] && <ActivityMap coordinates={activity.locations[0]}/>}
