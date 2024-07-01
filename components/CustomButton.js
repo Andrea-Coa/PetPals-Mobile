@@ -1,13 +1,11 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Ionicons } from '@expo/vector-icons';
 
-const CustomButton = ({ title, onPress }) => {
+const CustomButton = ({ title, onPress, icon }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        <Icon name="account-outline" size={24} color="#000" />
-      </View>
+      <Ionicons name={icon} size={24} color="black" style={styles.icon} />
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
@@ -21,15 +19,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#800080',
-    padding: 10,
-    margin: 10,
+    paddingVertical: 20, // Altura del botón
+    paddingHorizontal: 20, // Anchura del botón
+    marginVertical: 10,
+    width: '80%', // Ancho del botón
+    justifyContent: 'center', // Centra el contenido horizontalmente
   },
-  iconContainer: {
+  icon: {
     marginRight: 10,
   },
   buttonText: {
     fontSize: 16,
     color: '#000',
+    fontWeight: 'bold',
   },
 });
 

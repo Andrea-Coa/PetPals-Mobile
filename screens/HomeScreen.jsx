@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, ImageBackground } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomButton from '../components/CustomButton';
+import { Ionicons } from '@expo/vector-icons';
 
 // Importa la imagen
 const bgImage = require('../assets/dog_bg.png');
@@ -15,21 +16,25 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.headerText}>What’s up Pals</Text>
           </View>
 
-          <View style={styles.separatorContainer}>
-            <View style={styles.line} />
-            <Text style={styles.separatorText}>or</Text>
-            <View style={styles.line} />
-          </View>
-
           <View style={styles.buttonContainer}>
             <CustomButton
-              title="Sign Up"
-              onPress={() => navigation.navigate('Register')}
+              title="Google"
+              onPress={() => {}}
+              icon="logo-google"
             />
+            <View style={styles.separatorContainer}>
+              <View style={styles.line} />
+              <Text style={styles.separatorText}>or</Text>
+              <View style={styles.line} />
+            </View>
             <CustomButton
               title="Sign In"
               onPress={() => navigation.navigate('Login')}
+              icon="person-outline"
             />
+            <Text style={styles.footerText}>
+              Don't have an account? <Text style={styles.linkText} onPress={() => navigation.navigate('Register')}>Sign Up</Text>
+            </Text>
           </View>
         </View>
       </ImageBackground>
@@ -47,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(130, 46, 169, 0.6)', // Fondo morado con transparencia para superponer la imagen
   },
   header: {
-    backgroundColor: 'rgba(128, 0, 128, 0.7)', // Fondo morado con transparencia para el encabezado
+    backgroundColor: 'transparent', // Hace que el fondo del encabezado sea transparente
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 50,
@@ -68,17 +73,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: 70, // Aumenta el margen vertical para mayor separación
     width: '70%',
   },
   line: {
     flex: 1,
-    height: 1,
+    height: 2, // Aumenta la altura de la línea para que sea más gruesa
     backgroundColor: '#FFFFFF',
   },
   separatorText: {
-    marginHorizontal: 10,
+    marginHorizontal: 20, // Aumenta el margen horizontal para mayor separación
     color: '#FFFFFF',
     fontWeight: 'bold',
+    fontSize: 18, // Aumenta el tamaño del texto para "Or"
+  },
+  footerText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 100,
+  },
+  linkText: {
+    color: '#00CED1',
+    textDecorationLine: 'underline',
   },
 });

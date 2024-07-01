@@ -1,11 +1,43 @@
-import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { fetchLogin } from '../api';
 
 // Importa la imagen de fondo
 const bgImage = require('../assets/huella-perro.png');
 
-export default function SignUpScreen({ navigation }) {
+export default function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+    try {
+      const response = await fetchLogin(email, password);
+      if (response.status === 200) {
+        Alert.alert('Success', 'Logged in successfully');
+        // Navegar a la pantalla principal o la que desees después del login
+        navigation.navigate('GoodScreen');
+      }
+    } catch (error) {
+      if (error.response) {
+        Alert.alert('Error', `Error: ${error.response.data.message || error.response.status}`);
+        console.error('Error response:', error.response.data);
+      } else if (error.request) {
+        Alert.alert('Error', 'No response received from server');
+        console.error('Error request:', error.request);
+      } else {
+        Alert.alert('Error', `Error: ${error.message}`);
+        console.error('Error message:', error.message);
+      }
+    }
+  };
+
   return (
     <SafeAreaProvider>
       <ImageBackground source={bgImage} style={styles.background}>
@@ -18,17 +50,34 @@ export default function SignUpScreen({ navigation }) {
             <View style={styles.labelContainer}>
               <Text style={styles.labelText}>Email</Text>
             </View>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              keyboardType="email-address"
+            />
           </View>
 
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
               <Text style={styles.labelText}>Password</Text>
             </View>
-            <TextInput style={styles.input} secureTextEntry />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Password"
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={() => { /* Handle Sign Up */ }}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
@@ -47,6 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingTop: 60, // Agrega un padding superior para bajar los cuadros de texto
     backgroundColor: 'rgba(130, 46, 169, 0.6)', // Fondo morado con transparencia
   },
   header: {
@@ -65,7 +115,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    marginVertical: 25, // Incrementa la separación entre los bloques de texto
+    marginVertical: 50, // Incrementa la separación entre los bloques de texto
     paddingHorizontal: 10,
     paddingVertical: 5,
     position: 'relative',
@@ -96,7 +146,20 @@ const styles = StyleSheet.create({
   input: {
     height: 35,
     color: '#000',
-    marginTop: 10,
+    marginTop: 5,
+    flex: 1,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 5,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10, // Ajusta la posición del icono si es necesario
+    top: '50%',
+    transform: [{ translateY: -12 }],
   },
   button: {
     marginTop: 100, // Baja el botón para que esté más abajo
