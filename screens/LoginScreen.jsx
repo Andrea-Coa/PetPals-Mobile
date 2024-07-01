@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, ImageBackgr
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchLogin } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Importa la imagen de fondo
 const bgImage = require('../assets/huella-perro.png');
@@ -20,9 +21,15 @@ export default function LoginScreen({ navigation }) {
     try {
       const response = await fetchLogin(email, password);
       if (response.status === 200) {
+        const token = response.data.token;
+        await AsyncStorage.setItem('token', token); // Almacena el token en AsyncStorage
         Alert.alert('Success', 'Logged in successfully');
+
         // Navegar a la pantalla principal o la que desees después del login
-        navigation.navigate('GoodScreen');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'NavigationTabs' }],
+        });
       }
     } catch (error) {
       if (error.response) {

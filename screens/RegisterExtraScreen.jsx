@@ -21,6 +21,7 @@ export default function RegisterExtraScreen({ route, navigation }) {
         console.log('Token:', token); // Imprime el token en la consola
         await AsyncStorage.setItem('token', token);
         Alert.alert('Success', 'User registered successfully');
+        // Redirigir a la pantalla de inicio de sesión
         navigation.navigate('Login');
       }
     } catch (error) {

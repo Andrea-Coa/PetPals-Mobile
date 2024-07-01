@@ -1,34 +1,30 @@
-import { useEffect, useState } from 'react'
-import {fetchSingleActivity} from '../api';
+import React, { useEffect, useState } from 'react';
+import { fetchSingleActivity } from '../api';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, View, Image, ImageBackground, StyleSheet, Button, ScrollView} from 'react-native';
-import {useNavigation} from '@react-navigation/native'
-import {cld} from '../Cloudinary'
-import { ActivityMap } from './ActivityMap';
+import { Text, View, Image, ImageBackground, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import ActivityMap from './ActivityMap';
 
-export const ActivityScreen = (props) => {
-  const [activity,  setActivity] = useState(null);
+const ActivityScreen = (props) => {
+  const [activity, setActivity] = useState(null);
   const navigation = useNavigation();
-  
-  useEffect(()=> {
-    const getActivity = async() => {
+
+  useEffect(() => {
+    const getActivity = async () => {
       try {
         const res = await fetchSingleActivity(props.route.params.id);
         console.log("IIIII", res);
         setActivity(res);
-
-      }
-      catch(error) {
+      } catch (error) {
         console.error('Error fetching activity', error);
       }
-    }
+    };
     getActivity();
   }, [props.route.params.id]);
 
-
   return (
-    <ImageBackground source={require("../assets/huella-perro.png")} style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-      <SafeAreaView style={{flex: 1, alignItems: 'center'}}>
+    <ImageBackground source={require("../assets/huella-perro.png")} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <SafeAreaView style={{ flex: 1, alignItems: 'center' }}>
         {activity && 
           <ScrollView contentContainerStyle={styles.whitebox}>
             <Image 
@@ -44,14 +40,12 @@ export const ActivityScreen = (props) => {
               <Text>Fin: {activity.endDate}</Text>
               <Text>{activity.locations && activity.locations.length > 0 ? activity.locations[0].address : 'No location available'}</Text>
             </View>
-            {activity.locations[0] && <ActivityMap coordinates={activity.locations[0]}/>}
-            
+            {activity.locations[0] && <ActivityMap coordinates={activity.locations[0]} />}
           </ScrollView>}
-          {/* <Button title='MAP' onPress={()=>{navigation.navigate('Mapa')}}></Button> */}
       </SafeAreaView>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   whitebox: {
@@ -61,8 +55,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start' 
   },
   title: {
-    marginTop:10,
+    marginTop: 10,
     fontSize: 40,
     fontWeight: 'bold'
   }
-})
+});
+
+export default ActivityScreen;
