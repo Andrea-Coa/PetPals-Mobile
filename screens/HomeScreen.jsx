@@ -1,13 +1,53 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomButton from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
+
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+
+WebBrowser.maybeCompleteAuthSession();
 
 // Importa la imagen
 const bgImage = require('../assets/dog_bg.png');
 
 export default function HomeScreen({ navigation }) {
+
+const [accessToken, setAccessToken] = React.useState(null);
+const [User, setUser] = React.useState(null);
+const [request, response, promptAsync] = Google.useIdTokenAuthRequest({ 
+  androidClientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',  //Poner el ID de cliente de Google
+  iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com', //Poner el ID de cliente de Google
+  expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com'}); //Poner el ID de cliente de Google
+
+  React.useEffect(() => { 
+    if (response?.type === 'success') {  
+      setAccessToken(response.authentication.accessToken);
+      accessToken && fetchUserInfo();
+    } 
+  }, [response, accessToken]);
+
+  async function fetchUserInfo() {
+    let response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+      headers: { Authorization: `Bearer ${accessToken}`}
+    });
+    const userInfo = await response.json();
+    setUser(userInfo);
+  }
+
+  const ShowUserInfo = () => {
+    if(user) {
+      return (
+        <View style={{ alignItems: 'center' }}>
+          <Image source={{ uri: user.picture }} style={{ width: 100, height: 100, borderRadius: 50 }} />
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FFFFFF', marginVertical: 10 }}>{user.name}</Text>
+          <Text style={{ fontSize: 16, color: '#FFFFFF' }}>{user.email}</Text>
+        </View>
+      );
+    }
+  }
+
   return (
     <SafeAreaProvider>
       <ImageBackground source={bgImage} style={styles.background}>
@@ -16,12 +56,17 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.headerText}>What’s up Pals</Text>
           </View>
 
+
           <View style={styles.buttonContainer}>
+
             <CustomButton
               title="Google"
-              onPress={() => {}}
+              onPress={() => promptAsync()} // Llamar a promptAsync cuando el botón sea presionado
               icon="logo-google"
             />
+
+
+
             <View style={styles.separatorContainer}>
               <View style={styles.line} />
               <Text style={styles.separatorText}>or</Text>
