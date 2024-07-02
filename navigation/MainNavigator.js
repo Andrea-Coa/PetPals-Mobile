@@ -14,6 +14,9 @@ import { AntDesign } from '@expo/vector-icons';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import EditProfileScreen from '../screens/EditProfileScreen'; // Agregar esta línea
 import CreateActivityScreen from '../screens/CreateActivityScreen';
+import SucursalesFeedScreen from '../screens/SucursalesFeedScreen';
+import SubscriptorsFeedScreen from '../screens/SubscriptorsFeedScreen';
+import MyPetsFeedScreen from '../screens/MyPetsFeedScreen';
 
 
 const Stack = createStackNavigator();
@@ -35,8 +38,11 @@ const ActivityStack = () => {
 const ProfileStack = () => {
   return (
     <StackProfile.Navigator initialRouteName='Profile'>
-      <StackActivity.Screen name='Profile' component={ProfileScreen} />
+      <StackProfile.Screen name='Profile' component={ProfileScreen} />
       <StackProfile.Screen name='EditProfile' component={EditProfileScreen} /> 
+      <StackProfile.Screen name='SucursalesFeedScreen' component={SucursalesFeedScreen} />
+      <StackProfile.Screen name='SubscriptorsFeedScreen' component={SubscriptorsFeedScreen} />
+      <StackProfile.Screen name='MyPetsFeedScreen' component={MyPetsFeedScreen} />
     </StackProfile.Navigator>
   )
 }
