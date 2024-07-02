@@ -23,8 +23,8 @@ const ActivityScreen = (props) => {
   }, [props.route.params.id]);
 
   return (
-    <ImageBackground source={require("../assets/huella-perro.png")} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <SafeAreaView style={{ flex: 1, alignItems: 'center' }}>
+    <ImageBackground source={require("../assets/huella-perro.png")} style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+      <SafeAreaView style={{flex: 1, alignItems: 'center'}}>
         {activity && 
           <ScrollView contentContainerStyle={styles.whitebox}>
             <Image 
@@ -35,16 +35,19 @@ const ActivityScreen = (props) => {
             <View style={{width:'100%'}}>
               <Text style={styles.title}>{activity.name}</Text>
               <Text style={{ color: '#FF7F50' }}>{activity.activityType}</Text>
-              <Text>{activity.companyDto.name}</Text>
+              <Text style={{marginBottom: 20}}>By {activity.companyDto.name}</Text>
               <Text>Inicio: {activity.startDate}</Text>
               <Text>Fin: {activity.endDate}</Text>
+              <Text style={{fontWeight:'bold', marginTop:20}}>Ubicación: </Text>
               <Text>{activity.locations && activity.locations.length > 0 ? activity.locations[0].address : 'No location available'}</Text>
             </View>
-            {activity.locations[0] && <ActivityMap coordinates={activity.locations[0]} />}
+            {activity.locations[0] && <ActivityMap coordinates={activity.locations[0]}/>}
+            
           </ScrollView>}
+          {/* <Button title='MAP' onPress={()=>{navigation.navigate('Mapa')}}></Button> */}
       </SafeAreaView>
     </ImageBackground>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
@@ -55,10 +58,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start' 
   },
   title: {
-    marginTop: 10,
+    marginTop:10,
     fontSize: 40,
     fontWeight: 'bold'
-  }
-});
+  }});
 
 export default ActivityScreen;

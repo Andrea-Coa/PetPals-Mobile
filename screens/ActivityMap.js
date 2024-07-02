@@ -61,15 +61,16 @@ const ActivityMap = ({ coordinates }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+      flex:1,
+      backgroundColor:'#fff',
+      alignItems:'center',
+      justifyContent:'center',
+      marginTop:20
   },
-  map: {
-    width: windowWidth - 90,
-    height: 400,
-  },
+  map :{
+      width:windowWidth-90,
+      height:400
+  }
 });
 
 export default ActivityMap;

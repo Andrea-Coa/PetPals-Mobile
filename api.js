@@ -1,9 +1,9 @@
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://192.168.1.38:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.97.225:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
