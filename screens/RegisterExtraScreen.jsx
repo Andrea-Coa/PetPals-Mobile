@@ -14,6 +14,10 @@ export default function RegisterExtraScreen({ route, navigation }) {
   const [ruc, setRuc] = useState('');
 
   const handleRegister = async () => {
+    if (isCompany && (ruc.length < 8 || ruc.length > 11)) {
+      Alert.alert('Error', 'RUC must be between 8 and 11 digits');
+      return;
+    }
     try {
       const response = await fetchRegister(name, email, password, isCompany, ruc);
       if (response.status === 200) {
@@ -37,6 +41,7 @@ export default function RegisterExtraScreen({ route, navigation }) {
       }
     }
   };
+  
 
   return (
     <SafeAreaProvider>

@@ -1,48 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { fetchLogin } from '../api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { updateProfile, updateCompanyProfile, getRoleBasedOnToken } from '../api'; // Asegúrate de que la ruta sea correcta
 
 // Importa la imagen de fondo
-const bgImage = require('../assets/huella-perro.png');
+const bgImage = require('../assets/dog-h.png');
 
-export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
+export default function EditProfileScreen({ navigation }) {
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState('');
 
-  const handleLogin = async () => {
-    if (!email || !password) {
+  useEffect(() => {
+    const fetchRole = async () => {
+      const userRole = await getRoleBasedOnToken();
+      setRole(userRole);
+    };
+    fetchRole();
+  }, []);
+
+  const handleSave = async () => {
+    if (!name || (role === 'ROLE_PERSON' && !password)) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
     try {
-      const response = await fetchLogin(email, password);
-      if (response.status === 200) {
-        const token = response.data.token;
-        await AsyncStorage.setItem('token', token);
-        Alert.alert('Success', 'Logged in successfully');
-
-        // Navegar a la pantalla principal o la que desees después del login
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'NavigationTabs' }],
-        });
+      if (role === 'ROLE_PERSON') {
+        await updateProfile(name, password);
+      } else if (role === 'ROLE_COMPANY') {
+        await updateCompanyProfile(name);
       }
-
+      // Navegar a ProfileScreen y restablecer la navegación
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Profile' }],
+      });
     } catch (error) {
-      if (error.response) {
-        Alert.alert('Error', `Error: ${error.response.data.message || error.response.status}`);
-        console.error('Error response:', error.response.data);
-      } else if (error.request) {
-        Alert.alert('Error', 'No response received from server');
-        console.error('Error request:', error.request);
-      } else {
-        Alert.alert('Error', `Error: ${error.message}`);
-        console.error('Error message:', error.message);
-      }
+      Alert.alert('Error', `There was a problem updating your profile: ${error.message}`);
+      console.error(error);
     }
   };
 
@@ -51,42 +46,38 @@ export default function LoginScreen({ navigation }) {
       <ImageBackground source={bgImage} style={styles.background}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Sign In</Text>
+            <Text style={styles.headerText}>Edit Profile</Text>
           </View>
 
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
-              <Text style={styles.labelText}>Email</Text>
+              <Text style={styles.labelText}>Name</Text>
             </View>
             <TextInput
               style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email"
-              keyboardType="email-address"
+              value={name}
+              onChangeText={setName}
+              placeholder="Name"
             />
           </View>
 
-          <View style={styles.inputContainer}>
-            <View style={styles.labelContainer}>
-              <Text style={styles.labelText}>Password</Text>
-            </View>
-            <View style={styles.passwordContainer}>
+          {role === 'ROLE_PERSON' && (
+            <View style={styles.inputContainer}>
+              <View style={styles.labelContainer}>
+                <Text style={styles.labelText}>Password</Text>
+              </View>
               <TextInput
                 style={styles.input}
                 value={password}
                 onChangeText={setPassword}
                 placeholder="Password"
-                secureTextEntry={!showPassword}
+                secureTextEntry={true}
               />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
-              </TouchableOpacity>
             </View>
-          </View>
+          )}
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Continue</Text>
+          <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -156,18 +147,6 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 5,
     flex: 1,
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 5,
-  },
-  eyeIcon: {
-    position: 'absolute',
-    right: 10, // Ajusta la posición del icono si es necesario
-    top: '50%',
-    transform: [{ translateY: -12 }],
   },
   button: {
     marginTop: 100, // Baja el botón para que esté más abajo

@@ -3,7 +3,7 @@ import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.38:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
@@ -93,3 +93,54 @@ export const fetchUserProfile = async () => {
     console.error('ERROR FETCHING PROFILE', error);
   }
 }
+
+export const updateProfile = async (name, password) => {
+  const token = await AsyncStorage.getItem('token');
+  
+  console.log("Token:", token);
+  console.log("API URL:", `${API_URL}/person`);
+  console.log("Name:", name);
+  console.log("Password:", password);
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/person`,
+      { name, password },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("api.js:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error('ERROR UPDATING PROFILE', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export const updateCompanyProfile = async (name) => {
+  const token = await AsyncStorage.getItem('token');
+  
+  console.log("Token:", token);
+  console.log("API URL:", `${API_URL}/company`);
+  console.log("Name:", name);
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/company`,
+      { name },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("api.js:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error('ERROR UPDATING COMPANY PROFILE', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};

@@ -12,6 +12,9 @@ import ActivityMap from '../screens/ActivityMap'; // Importar correctamente
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen'; // Agregar esta línea
+import CreateActivityScreen from '../screens/CreateActivityScreen';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -24,6 +27,7 @@ const ActivityStack = () => {
       <StackActivity.Screen name='Eventos' component={ActivityFeedScreen} />
       <StackActivity.Screen name='Evento' component={ActivityScreen} />
       <StackActivity.Screen name='Mapa' component={ActivityMap} />
+      <StackActivity.Screen name='CreateActivity' component={CreateActivityScreen} />
     </StackActivity.Navigator>
   );
 };
@@ -32,6 +36,7 @@ const ProfileStack = () => {
   return (
     <StackProfile.Navigator initialRouteName='Profile'>
       <StackActivity.Screen name='Profile' component={ProfileScreen} />
+      <StackProfile.Screen name='EditProfile' component={EditProfileScreen} /> 
     </StackProfile.Navigator>
   )
 }

@@ -48,6 +48,7 @@ const ActivityFeedScreen = () => {
       <Button 
         title="Crear Actividad"
         accessibilityLabel="Botón para crear nueva actividad"
+        onPress={() => navigation.navigate('CreateActivity')}
       />
     )}
     <SafeAreaView>    
