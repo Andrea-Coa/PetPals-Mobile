@@ -8,7 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Importa la imagen de fondo
 const bgImage = require('../assets/huella-perro.png');
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
+  const { fromRegisterExtra } = route.params || {};
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -88,6 +89,12 @@ export default function LoginScreen({ navigation }) {
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
+
+          {fromRegisterExtra && (
+            <TouchableOpacity style={styles.homeButton} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}>
+              <Text style={styles.homeButtonText}>Back to Home</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ImageBackground>
     </SafeAreaProvider>
@@ -180,5 +187,16 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  homeButton: {
+    marginTop: 20, // Ajusta el margen superior según sea necesario
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  homeButtonText: {
+    color: '#000000',
+    fontSize: 16,
   },
 });
