@@ -10,10 +10,13 @@ import ActivityFeedScreen from '../screens/ActivityFeedScreen';
 import ActivityScreen from '../screens/ActivityScreen'; // Importar correctamente
 import ActivityMap from '../screens/ActivityMap'; // Importar correctamente
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { ProfileScreen } from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const StackActivity = createStackNavigator();
+const StackProfile = createStackNavigator();
 
 const ActivityStack = () => {
   return (
@@ -24,6 +27,14 @@ const ActivityStack = () => {
     </StackActivity.Navigator>
   );
 };
+
+const ProfileStack = () => {
+  return (
+    <StackProfile.Navigator initialRouteName='Profile'>
+      <StackActivity.Screen name='Profile' component={ProfileScreen} />
+    </StackProfile.Navigator>
+  )
+}
 
 const NavigationTabs = () => {
   return (
@@ -41,6 +52,18 @@ const NavigationTabs = () => {
           ),
         }} 
       />
+      <Tab.Screen
+        name='ProfileStack'
+        component={ProfileStack}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign 
+            name="user" 
+            size={size} 
+            color={color} />
+          ),
+        }} />
     </Tab.Navigator>
   );
 };
