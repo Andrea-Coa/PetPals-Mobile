@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchActivityInProgress, getRoleBasedOnToken } from '../api';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Entypo } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -20,7 +20,17 @@ const ActivityFeedScreen = () => {
   const [page, setPage] = useState(0);
   const [role, setRole] = useState(null);
   const navigation = useNavigation();
+  const isFocused = useIsFocused(); // Hook to check if screen is focused
   const image = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/rnhafgpvrssjyk2bufre?_a=DATAdtAAZAA0";
+
+  const getActivities = async (page) => {
+    try {
+      const res = await fetchActivityInProgress(page);
+      setActivities(res.content);
+    } catch (error) {
+      console.error('failed to fetch activities', error);
+    }
+  };
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -28,17 +38,13 @@ const ActivityFeedScreen = () => {
       setRole(userRole);
     };
     fetchRole();
+  }, []);
 
-    const getActivities = async (page) => {
-      try {
-        const res = await fetchActivityInProgress(page);
-        setActivities(res.content);
-      } catch (error) {
-        console.error('failed to fetch activities', error);
-      }
-    };
-    getActivities(page);
-  }, [page]);
+  useEffect(() => {
+    if (isFocused) {
+      getActivities(page);
+    }
+  }, [isFocused, page]);
 
   console.log(activities);
 
@@ -79,7 +85,6 @@ const ActivityFeedScreen = () => {
             </View>
           </TouchableOpacity>
         )}
-
       />
     </SafeAreaView>
     </ImageBackground>

@@ -3,7 +3,7 @@ import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://192.168.1.238:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.243:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
@@ -35,7 +35,7 @@ export async function fetchLogin(email, password) {
 export const fetchActivityInProgress = async (page) => {
   try {
     const token = await AsyncStorage.getItem('token');
-    const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=10`;
+    const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=100`;
     console.log(url);
     const response = await axios.get(url, {
       headers: { 'Authorization': `Bearer ${token}` },

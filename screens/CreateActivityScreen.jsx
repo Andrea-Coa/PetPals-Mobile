@@ -46,7 +46,7 @@ export default function CreateActivityScreen() {
     try {
       await fetchCreateActivity(newActivity);
       Alert.alert('Success', 'Activity created successfully');
-      navigation.goBack();
+      navigation.navigate('Eventos', { reload: true });
     } catch (error) {
       Alert.alert('Error', `There was a problem creating the activity: ${error.message}`);
     }
@@ -134,7 +134,7 @@ export default function CreateActivityScreen() {
       </SafeAreaView>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   background: {
