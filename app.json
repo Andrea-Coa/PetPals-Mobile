@@ -1,27 +1,28 @@
 {
   "expo": {
-    "name": "PetPals-Mobile",
-    "slug": "PetPals-Mobile",
+    "name": "PetPalsMobile",
+    "slug": "PetPalsMobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "scheme":"petpals",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.DBP.PetPals-Mobile"
+      "bundleIdentifier": "com.DBP.PetPalsMobile"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.DBP.PetPals-Mobile"
+      "package": "com.DBP.PetPalsMobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
