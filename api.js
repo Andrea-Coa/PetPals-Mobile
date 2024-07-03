@@ -144,3 +144,28 @@ export const updateCompanyProfile = async (name) => {
     throw error;
   }
 };
+
+export const fetchPetsDefault = async (page) => {
+  const token = await AsyncStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=10`, {
+      headers: {
+        'Authorization':`Bearer ${token}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+}
+
+export const postPet = async(body) => {
+  const token = await AsyncStorage.getItem('token');
+  try
+  {
+    await axios.post(`${API_URL}/pets`, body, {
+    headers: {
+      'Authorization':`Bearer ${token}`,
+      },
+     });
+  } catch(error) {
+    console.error('FAILED TO POST PET');
+  }
+}
