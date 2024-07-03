@@ -169,3 +169,20 @@ export const postPet = async(body) => {
     console.error('FAILED TO POST PET');
   }
 }
+
+export const fetchCreateActivity = async (newActivity) => {
+  const token = await AsyncStorage.getItem('token');
+  console.log('Token:', token); // Verificar si el token está presente
+  try {
+    const response = await axios.post(`${API_URL}/activities`, newActivity, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    console.log('Response:', response.data); // Verificar la respuesta
+    return response.data;
+  } catch (error) {
+    console.error('ERROR CREATING ACTIVITY', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};

@@ -14,7 +14,10 @@ export const ProfileScreen = () => {
 
   const logout = async () => {
     await AsyncStorage.removeItem('token');
-    navigation.navigate('Home');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    });
   };
 
   useEffect(() => {
