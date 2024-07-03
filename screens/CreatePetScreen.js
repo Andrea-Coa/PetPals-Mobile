@@ -26,7 +26,11 @@ export const CreatePetScreen = () => {
         try {
             await postPet(pet);
             console.log('submitted');
-            navigation.goBack();
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'PetFeed' }],
+                
+              });
 
         }
         catch(error) {
