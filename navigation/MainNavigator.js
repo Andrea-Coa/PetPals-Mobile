@@ -14,13 +14,18 @@ import { AntDesign } from '@expo/vector-icons';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import EditProfileScreen from '../screens/EditProfileScreen'; // Agregar esta línea
 import CreateActivityScreen from '../screens/CreateActivityScreen';
+import { PetFeedScreen } from '../screens/PetFeedScreen';
+import { PetScreen } from '../screens/PetScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CustomCamera } from '../components/CustomCamera';
+import { CreatePetScreen } from '../screens/CreatePetScreen';
 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const StackActivity = createStackNavigator();
 const StackProfile = createStackNavigator();
-
+const StackPet = createStackNavigator();
 const ActivityStack = () => {
   return (
     <StackActivity.Navigator initialRouteName='Eventos'>
@@ -41,9 +46,26 @@ const ProfileStack = () => {
   )
 }
 
+const PetStack = () => {
+  return (
+    <StackPet.Navigator initialRouteName='PetFeed'>
+      <StackActivity.Screen name='PetFeed' component={PetFeedScreen} />
+      <StackPet.Screen name='Pet' component={PetScreen} />
+      <StackPet.Screen name='CreatePet' component={CreatePetScreen} />
+      <StackPet.Screen name='Camera' component={CustomCamera} />
+    </StackPet.Navigator>
+  )
+}
+
 const NavigationTabs = () => {
   return (
-    <Tab.Navigator initialRouteName='Eventos'>
+    <Tab.Navigator 
+      initialRouteName='Eventos'
+      screenOptions={{
+        tabBarActiveTintColor:'#00CED1',
+        tabBarInactiveTintColor:'#808080'
+      }}
+      >
       <Tab.Screen 
         name='ActivityStack' 
         component={ActivityStack}
@@ -57,6 +79,18 @@ const NavigationTabs = () => {
           ),
         }} 
       />
+            <Tab.Screen
+        name='PetStack'
+        component={PetStack}
+        options= {{
+          headerShown: false,
+          tabBarIcon:({color, size}) => (
+            <Ionicons 
+            name="paw-outline" 
+            size={size} 
+            color={color} />
+          ),
+        }} />
       <Tab.Screen
         name='ProfileStack'
         component={ProfileStack}
