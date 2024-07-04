@@ -65,67 +65,100 @@ export default function CreateActivityScreen() {
     <ImageBackground source={bgImage} style={styles.background}>
       <SafeAreaView style={styles.container}>
         <ScrollView>
-          <Text style={styles.field}>Nombre</Text>
-          <TextInput
-            style={styles.box}
-            placeholder="Enter activity name"
-            value={activity.name}
-            onChangeText={(value) => setActivity({ ...activity, name: value })}
-          />
-
-          <Text style={styles.field}>Fecha de inicio</Text>
-          <DateTimePicker
-            value={activity.startDate}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => setActivity({ ...activity, startDate: selectedDate || activity.startDate })}
-            style={styles.datePicker}
-          />
-
-          <Text style={styles.field}>Fecha de fin</Text>
-          <DateTimePicker
-            value={activity.endDate}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => setActivity({ ...activity, endDate: selectedDate || activity.endDate })}
-            style={styles.datePicker}
-          />
-
-          <Text style={styles.field}>Tipo de actividad</Text>
-          <View style={[styles.box, { justifyContent: 'center' }]}>
-            <Picker
-              selectedValue={activity.activityType}
-              style={{ height: 180, marginTop: -20 }}  // Ajusta el marginTop para mover los ítems hacia arriba
-              onValueChange={(itemValue) => setActivity({ ...activity, activityType: itemValue })}
-            >
-              <Picker.Item label="Vaccination Campaign" value="VACCINATION_CAMPAIGN" />
-              <Picker.Item label="Adoption Campaign" value="ADOPTION_CAMPAIGN" />
-              <Picker.Item label="Limited Discount" value="LIMITED_DISCOUNT" />
-              <Picker.Item label="Pet Contest" value="PET_CONTEST" />
-              <Picker.Item label="Workshop" value="WORKSHOP" />
-              <Picker.Item label="Other" value="OTHER" />
-            </Picker>
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Nombre</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter activity name"
+              value={activity.name}
+              onChangeText={(value) => setActivity({ ...activity, name: value })}
+            />
           </View>
 
-          <Text style={styles.field}>Ubicación</Text>
-          <TextInput
-            style={styles.box}
-            placeholder="Enter location address"
-            value={activity.location.address}
-            onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, address: value } })}
-          />
-          <TextInput
-            style={styles.box}
-            placeholder="Enter location latitude"
-            value={activity.location.latitude.toString()}
-            onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, latitude: parseFloat(value) } })}
-          />
-          <TextInput
-            style={styles.box}
-            placeholder="Enter location longitude"
-            value={activity.location.longitude.toString()}
-            onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, longitude: parseFloat(value) } })}
-          />
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Fecha de inicio</Text>
+            </View>
+            <DateTimePicker
+              value={activity.startDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => setActivity({ ...activity, startDate: selectedDate || activity.startDate })}
+              style={styles.datePicker}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Fecha de fin</Text>
+            </View>
+            <DateTimePicker
+              value={activity.endDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => setActivity({ ...activity, endDate: selectedDate || activity.endDate })}
+              style={styles.datePicker}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Tipo de actividad</Text>
+            </View>
+
+            <View style={[styles.input, { justifyContent: 'center', height: 180 }]}>
+              <Picker
+                selectedValue={activity.activityType}
+                style={{ height: 200, marginTop: -20 }}  // Ajusta el marginTop para mover los ítems hacia arriba
+                onValueChange={(itemValue) => setActivity({ ...activity, activityType: itemValue })}
+              >
+                <Picker.Item label="Vaccination Campaign" value="VACCINATION_CAMPAIGN" />
+                <Picker.Item label="Adoption Campaign" value="ADOPTION_CAMPAIGN" />
+                <Picker.Item label="Limited Discount" value="LIMITED_DISCOUNT" />
+                <Picker.Item label="Pet Contest" value="PET_CONTEST" />
+                <Picker.Item label="Workshop" value="WORKSHOP" />
+                <Picker.Item label="Other" value="OTHER" />
+              </Picker>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Ubicación</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter location address"
+              value={activity.location.address}
+              onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, address: value } })}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Latitud</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter location latitude"
+              value={activity.location.latitude.toString()}
+              onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, latitude: parseFloat(value) } })}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>Longitud</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter location longitude"
+              value={activity.location.longitude.toString()}
+              onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, longitude: parseFloat(value) } })}
+            />
+          </View>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.blackButton} onPress={navigateCamera}>
@@ -153,12 +186,29 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
   },
-  field: {
-    color: 'white',
-    marginBottom: 4,
-    marginLeft: 8,
+  inputContainer: {
+    marginVertical: 10,
+    width: '100%',
+    position: 'relative',
   },
-  box: {
+  labelContainer: {
+    position: 'absolute',
+    top: -10,
+    left: 10,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 15,
+    zIndex: 1,
+    borderRadius: 10,
+    width: '50%', // Ajusta el ancho de la etiqueta a 60%
+    alignItems: 'center', // Centrar el texto dentro del contenedor
+  },
+  labelText: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  input: {
+    height: 50, // Ajusta la altura del cuadro de texto
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 10,
     padding: 10,
@@ -197,5 +247,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 4,
+    alignSelf: 'center', // Agrega esta línea para centrar el botón
   },
 });
