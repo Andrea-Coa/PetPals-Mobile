@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker'; // Asegúrate de tener instalado y correctamente importado el Picker
 import { fetchCreateActivity } from '../api';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -91,12 +92,20 @@ export default function CreateActivityScreen() {
           />
 
           <Text style={styles.field}>Tipo de actividad</Text>
-          <TextInput
-            style={styles.box}
-            placeholder="Enter activity type"
-            value={activity.activityType}
-            onChangeText={(value) => setActivity({ ...activity, activityType: value })}
-          />
+          <View style={[styles.box, { justifyContent: 'center' }]}>
+            <Picker
+              selectedValue={activity.activityType}
+              style={{ height: 180, marginTop: -20 }}  // Ajusta el marginTop para mover los ítems hacia arriba
+              onValueChange={(itemValue) => setActivity({ ...activity, activityType: itemValue })}
+            >
+              <Picker.Item label="Vaccination Campaign" value="VACCINATION_CAMPAIGN" />
+              <Picker.Item label="Adoption Campaign" value="ADOPTION_CAMPAIGN" />
+              <Picker.Item label="Limited Discount" value="LIMITED_DISCOUNT" />
+              <Picker.Item label="Pet Contest" value="PET_CONTEST" />
+              <Picker.Item label="Workshop" value="WORKSHOP" />
+              <Picker.Item label="Other" value="OTHER" />
+            </Picker>
+          </View>
 
           <Text style={styles.field}>Ubicación</Text>
           <TextInput
