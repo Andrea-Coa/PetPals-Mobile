@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, Button, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker'; // Asegúrate de tener instalado y correctamente importado el Picker
 import { fetchCreateActivity } from '../api';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import {CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_PRESET} from '@env';
 
 const bgImage = require('../assets/huella-perro.png');
 
 export default function CreateActivityScreen() {
+  const cloudinaryUploadUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload?upload_preset=${CLOUDINARY_PRESET}&api_key=${CLOUDINARY_API_KEY}`;
   const navigation = useNavigation();
   const route = useRoute();
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [localImage, setLocalImage] = useState(null);
   const [activity, setActivity] = useState({
     name: '',
     startDate: new Date(),
@@ -18,11 +25,23 @@ export default function CreateActivityScreen() {
     activityType: '',
     location: {
       address: '',
-      latitude: 40.785091, // Default positive latitude
-      longitude: -73.968285, // Default positive longitude
+      latitude: 0., // Default positive latitude
+      longitude: 0., // Default positive longitude
     },
     image: 'https://res.cloudinary.com/dp7zuvv8c/image/upload/v1719925435/PetPals/borzqbceaaxxzkjqfgyu?_a=DATAdtAAZAA0',
   });
+
+  const onStartDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || activity.startDate;
+    setShowStartDatePicker(Platform.OS === 'ios');
+    setActivity({ ...activity, startDate: currentDate });
+  };
+  
+  const onEndDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || activity.endDate;
+    setShowEndDatePicker(Platform.OS === 'ios');
+    setActivity({ ...activity, endDate: currentDate });
+  };
 
   useEffect(() => {
     if (route.params?.photoUri) {
@@ -31,35 +50,75 @@ export default function CreateActivityScreen() {
   }, [route.params?.photoUri]);
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+      formData.append('file', {
+        uri: localImage,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      });
+      console.log(localImage);
+
     if (!activity.name || !activity.startDate || !activity.endDate || !activity.activityType || !activity.location.address || !activity.image) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    const newActivity = {
-      ...activity,
-      startDate: activity.startDate.toISOString().split('T')[0],
-      endDate: activity.endDate.toISOString().split('T')[0],
-    };
-
-    console.log("JSON enviado:", JSON.stringify(newActivity, null, 2));
-
     try {
+      const response = await fetch(cloudinaryUploadUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    
+      const responseData = await response.json();
+      console.log(responseData);
+
+      const newActivity = {
+        ...activity,
+        startDate: activity.startDate.toISOString().split('T')[0],
+        endDate: activity.endDate.toISOString().split('T')[0],
+        image: responseData.url
+      };
+      console.log(newActivity);
+      // console.log('Imagen subida con éxito a Cloudinary:', responseData);
+      // console.log("JSON enviado:", JSON.stringify(newActivity, null, 2));
+    
+      // // setActivity({...activity, image:responseData.url});
       await fetchCreateActivity(newActivity);
-      Alert.alert('Success', 'Activity created successfully');
+      // Alert.alert('Success', 'Activity created successfully');
       navigation.navigate('Eventos', { reload: true });
     } catch (error) {
       Alert.alert('Error', `There was a problem creating the activity: ${error.message}`);
     }
   };
 
-  const navigateCamera = () => {
-    navigation.navigate('Camera', { returnScreen: 'CreateActivity' });
-  };
 
-  const navigateGallery = () => {
-    navigation.navigate('Gallery', { returnScreen: 'CreateActivity' });
-  };
+    const openGallery = async() =>  {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality:1
+      });
+
+      if (!result.canceled) {
+        setLocalImage(result.assets[0].uri);
+      }
+    };
+    console.log(localImage);
+
+    const openCamera = async() => {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [3,3],
+        quality: 1,
+      });
+      
+      if (!result.canceled) {
+        setLocalImage(result.assets[0].uri);
+      }  
+    };
 
   return (
     <ImageBackground source={bgImage} style={styles.background}>
@@ -81,26 +140,43 @@ export default function CreateActivityScreen() {
             <View style={styles.labelContainer}>
               <Text style={styles.labelText}>Fecha de inicio</Text>
             </View>
-            <DateTimePicker
+            {/* <DateTimePicker
               value={activity.startDate}
               mode="date"
               display="default"
               onChange={(event, selectedDate) => setActivity({ ...activity, startDate: selectedDate || activity.startDate })}
               style={styles.datePicker}
-            />
+            /> */}
+            {Platform.OS === 'android' && (
+              <Button title="Select Start Date" onPress={() => setShowStartDatePicker(true)} />
+            )}
+
+            {showStartDatePicker && (
+              <DateTimePicker
+                value={activity.startDate}
+                mode={'date'}
+                display={Platform.OS === 'android' ? 'calendar' : 'spinner'}
+                onChange={onStartDateChange}
+              />
+            )}
           </View>
 
           <View style={styles.inputContainer}>
             <View style={styles.labelContainer}>
               <Text style={styles.labelText}>Fecha de fin</Text>
             </View>
-            <DateTimePicker
-              value={activity.endDate}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => setActivity({ ...activity, endDate: selectedDate || activity.endDate })}
-              style={styles.datePicker}
-            />
+            {Platform.OS === 'android' && (
+              <Button title="Select End Date" onPress={() => setShowEndDatePicker(true)} />
+            )}
+
+            {showEndDatePicker && (
+              <DateTimePicker
+                value={activity.endDate}
+                mode={'date'}
+                display={Platform.OS === 'android' ? 'calendar' : 'spinner'}
+                onChange={onEndDateChange}
+              />
+            )}
           </View>
 
           <View style={styles.inputContainer}>
@@ -143,7 +219,7 @@ export default function CreateActivityScreen() {
             <TextInput
               style={styles.input}
               placeholder="Enter location latitude"
-              value={activity.location.latitude.toString()}
+              // value={activity.location.latitude.toString()} 
               onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, latitude: parseFloat(value) } })}
             />
           </View>
@@ -155,19 +231,35 @@ export default function CreateActivityScreen() {
             <TextInput
               style={styles.input}
               placeholder="Enter location longitude"
-              value={activity.location.longitude.toString()}
+              // value={activity.location.longitude.toString()}
               onChangeText={(value) => setActivity({ ...activity, location: { ...activity.location, longitude: parseFloat(value) } })}
             />
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.blackButton} onPress={navigateCamera}>
+            <TouchableOpacity style={styles.blackButton} onPress={openCamera}>
               <Text style={styles.buttonText}>Toma una foto con la cámara</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.blackButton} onPress={navigateGallery}>
+            <TouchableOpacity style={styles.blackButton} onPress={openGallery}>
               <Text style={styles.buttonText}>Sube una foto de tu dispositivo</Text>
             </TouchableOpacity>
           </View>
+
+          {localImage && (
+                  <View style={{ width: 160, flexDirection:'row', height: 40, backgroundColor:'#fff', borderRadius:4, alignItems:'center', marginBottom:8 }}>
+                    <Image
+                      source={{ uri: localImage }}
+                      style={{ width: '30%', height:'90%', margin:1 }}
+                    />
+                    <Text style={{fontSize:10, width:'40%', padding:2, margin:6}}>Imagen seleccionada</Text>
+                    <TouchableOpacity
+                      onPress={() => setLocalImage(null)}
+                      style={{ backgroundColor: 'transparent'}}
+                    >
+                      <Ionicons name="trash" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                )}
 
           <TouchableOpacity style={styles.cyanButton} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Create</Text>

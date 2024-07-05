@@ -20,7 +20,6 @@ import MyPetsFeedScreen from '../screens/MyPetsFeedScreen';
 import { PetFeedScreen } from '../screens/PetFeedScreen';
 import { PetScreen } from '../screens/PetScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CustomCamera } from '../components/CustomCamera';
 import { CreatePetScreen } from '../screens/CreatePetScreen';
 
 const Stack = createStackNavigator();
@@ -36,7 +35,6 @@ const ActivityStack = () => {
       <StackActivity.Screen name='Evento' component={ActivityScreen} />
       <StackActivity.Screen name='Mapa' component={ActivityMap} />
       <StackActivity.Screen name='CreateActivity' component={CreateActivityScreen} />
-      <StackActivity.Screen name='Camera' component={CustomCamera} />
     </StackActivity.Navigator>
   );
 };
@@ -59,7 +57,6 @@ const PetStack = () => {
       <StackPet.Screen name='PetFeed' component={PetFeedScreen} />
       <StackPet.Screen name='Pet' component={PetScreen} />
       <StackPet.Screen name='CreatePet' component={CreatePetScreen} />
-      <StackPet.Screen name='Camera' component={CustomCamera} />
     </StackPet.Navigator>
   )
 }
@@ -138,7 +135,7 @@ export default function MainNavigator() {
       <Stack.Navigator initialRouteName="AppNavigator">
         <Stack.Screen 
           name="AppNavigator" 
-          component={NavigationTabs} 
+          component={AppNavigator} 
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

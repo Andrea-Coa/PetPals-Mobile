@@ -66,7 +66,7 @@ const ActivityFeedScreen = () => {
             <TouchableOpacity onPress={() => {navigation.navigate('Evento', { id: item.id })}}>
               <View style={styles.itemBox}>
                 <Image 
-                  source={{ uri: image }} 
+                  source={{ uri: item.image ? item.image:image }} 
                   style={{ width: 100, height: 100, margin: 10 }} 
                 />
                 <View style={{ margin: 10 }}>
