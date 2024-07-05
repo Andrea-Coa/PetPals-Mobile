@@ -3,7 +3,7 @@ import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://192.168.1.243:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
@@ -147,7 +147,7 @@ export const updateCompanyProfile = async (name) => {
 
 export const fetchPetsDefault = async (page) => {
   const token = await AsyncStorage.getItem('token');
-    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=10`, {
+    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=20`, {
       headers: {
         'Authorization':`Bearer ${token}`,
       },

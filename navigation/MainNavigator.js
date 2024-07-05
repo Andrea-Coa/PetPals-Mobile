@@ -138,7 +138,7 @@ export default function MainNavigator() {
       <Stack.Navigator initialRouteName="AppNavigator">
         <Stack.Screen 
           name="AppNavigator" 
-          component={AppNavigator} 
+          component={NavigationTabs} 
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -1,143 +1,90 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Button } from 'react-native';
 import { SafeAreaView, } from 'react-native-safe-area-context';
 import { HelperText } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { postPet } from '../api';
-import { Picker } from '@react-native-picker/picker';
+import { NewPetForm } from '../components/NewPetForm';
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
+
+/* 
+    PANTALLA PARA CREAR MASCOTA
+    Contiene:
+    - Formulario para rellenar datos de la mascota
+    - Botones para elegir una foto:
+      - Cámara o
+      - Elegir de galería
+*/
 
 export const CreatePetScreen = () => {
-  const navigation = useNavigation();
-  const [pet, setPet] = useState({
-    name: '',
-    birthDate: null,
-    sex: '',
-    breed: '',
-    weight: null,
-    species: null,
-    description: '',
-    // IMAGEN POR DEFAULT HASTA QUE VEAMOS CÓMO SUBIR IMÁGENES
-    image: 'https://res.cloudinary.com/dp7zuvv8c/image/upload/v1719925435/PetPals/borzqbceaaxxzkjqfgyu?_a=DATAdtAAZAA0',
-  });
+    const navigation = useNavigation();
+    const [image, setImage] = useState(null);
 
-  const handleSubmit = async () => {
-    try {
-      await postPet(pet);
-      console.log('submitted');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'PetFeed' }],
+    const openGallery = async() =>  {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images
       });
-    } catch (error) {
-      console.error('from create pet screen, failed', error);
-    }
-  };
 
-  const isNameEmpty = () => {
-    return pet.name == '';
-  };
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    };
+    console.log(image);
 
-  const validateWeight = () => {
-    return pet.weight < 0.0;
-  };
+    const openCamera = async() => {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [3,3],
+        quality: 1,
+      });
+      
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }  
+    };
 
-  const navigateCamera = () => {
-    navigation.navigate('Camera', { returnScreen: 'CreatePet' });
-  };
+    return (
+        <ImageBackground source={require('../assets/huella-perro.png')} style={styles.background}>
+          <SafeAreaView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              
+                <View style={styles.header}>
+                  <Text style={styles.title}>Agrega una mascota</Text>
+                  <Text style={styles.description}>¡Ayuda a una mascota a encontrar un hogar pronto! Asegúrate de agregar una descripción detallada para que los futuros dueños puedan conocerla mejor. Cada detalle cuenta para encontrar el hogar perfecto para tu mascota.</Text>
+                </View>
 
-  const navigateGallery = () => {
-    navigation.navigate('Gallery', { returnScreen: 'CreatePet' });
-  };
+                <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.blackButton} onPress={openCamera}>
+                  <Text style={styles.buttonText}>Toma una foto con la cámara</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.blackButton} onPress={openGallery}>
+                  <Text style={styles.buttonText}>Sube una foto de tu dispositivo</Text>
+                </TouchableOpacity>
+                </View>
 
-  return (
-    <ImageBackground source={require('../assets/huella-perro.png')} style={styles.background}>
-      <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <Text style={styles.field}>Nombre</Text>
-          <TextInput
-            label='Name'
-            style={styles.box}
-            onChangeText={(value) => setPet({ ...pet, name: value })}
-            accessible={true}
-            accessibilityLabel="nombre de la mascota" />
-          <HelperText type="error" visible={isNameEmpty()}>Ingresa un nombre válido</HelperText>
+                {image && (
+                  <View style={{ width: 160, flexDirection:'row', height: 40, backgroundColor:'#fff', borderRadius:4, alignItems:'center', marginBottom:8 }}>
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: '30%', height:'90%', margin:1 }}
+                    />
+                    <Text style={{fontSize:10, width:'40%', padding:2, margin:6}}>Imagen seleccionada</Text>
+                    <TouchableOpacity
+                      onPress={() => setImage(null)}
+                      style={{ backgroundColor: 'transparent'}}
+                    >
+                      <Ionicons name="trash" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-          <Text style={styles.field}>Fecha de nacimiento</Text>
-          <TextInput
-            label='Fecha-de-nacimiento'
-            style={styles.box}
-            onChangeText={(value) => setPet({ ...pet, birthDate: value })}
-            accessible={true}
-            accessibilityLabel="fecha de nacimiento de la mascota" />
+                <NewPetForm petImage={image}/>
 
-          <Text style={styles.field}>Sexo</Text>
-          <TextInput
-            label='Sexo'
-            style={styles.box}
-            onChangeText={(value) => setPet({ ...pet, sex: value })}
-            accessible={true}
-            accessibilityLabel="sexo de la mascota" />
 
-          <Text style={styles.field}>Especie</Text>
-          <Picker
-            selectedValue={pet.species}
-            style={styles.box}
-            onValueChange={(itemValue) => setPet({ ...pet, species: itemValue })}
-            accessible={true}
-            accessibilityLabel="especie de la mascota"
-          >
-            <Picker.Item label="Perro" value="DOG" />
-            <Picker.Item label="Gato" value="CAT" />
-            <Picker.Item label="Roedor" value="RODENT" />
-            <Picker.Item label="Ave" value="BIRD" />
-            <Picker.Item label="Otro" value="OTHER" />
-
-          </Picker>
-
-          <Text style={styles.field}>Raza</Text>
-          <TextInput
-            label='Raza'
-            style={styles.box}
-            onChangeText={(value) => setPet({ ...pet, breed: value })}
-            accessible={true}
-            accessibilityLabel="raza de la mascota" />
-
-          <Text style={styles.field}>Peso</Text>
-          <TextInput
-            label='Peso'
-            keyboardType='numeric'
-            style={styles.box}
-            onChangeText={(value) => setPet({ ...pet, weight: parseFloat(value) })}
-            accessible={true}
-            accessibilityLabel="peso de la mascota" />
-          <HelperText type="error" visible={validateWeight()}>Ingresa un peso válido</HelperText>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.blackButton} onPress={navigateCamera}>
-              <Text style={styles.buttonText}>Toma una foto con la cámara</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.blackButton} onPress={navigateGallery}>
-              <Text style={styles.buttonText}>Sube una foto de tu dispositivo</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.field}>Deja una descripción para {pet.name}</Text>
-          <TextInput
-            label='Descripcion'
-            style={{ ...styles.box, height: 100 }}
-            onChangeText={(value) => setPet({ ...pet, description: value })}
-            accessible={true}
-            multiline
-            accessibilityLabel="descripción de la mascota" />
-
-          <View style={{ flex: 1, alignItems: 'center', marginTop: 8 }}>
-            <TouchableOpacity style={styles.cyanButton} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Listo</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-
+            </ScrollView>
+          </SafeAreaView>
     </ImageBackground>
   );
 };
@@ -148,18 +95,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   container: {
-    padding: 24
-  },
-  field: {
-    color: 'white',
-    marginBottom: 4,
-    marginLeft: 8
-  },
-  box: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10
+    paddingHorizontal: 24
   },
   buttonText: {
     color: '#FFFFFF',
@@ -190,5 +126,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 4
+  },
+  header: {
+    paddingBottom:8
+  },
+  title: {
+    color:'white',
+    fontSize:32,
+    fontWeight:'bold'
+  }, 
+  description: {
+    color:'white'
   }
 });
