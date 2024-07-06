@@ -1,10 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, ImageBackground, StyleSheet, Image, View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getRoleBasedOnToken } from '../api';
 
 export const PetScreen = ({route}) => {
+    const [role, setRole] = useState(null);
     const {pet} = route.params;
+
+    useEffect(() => {
+        const fetchRole = async () => {
+          const userRole = await getRoleBasedOnToken();
+          setRole(userRole);
+        };
+        fetchRole();
+      }, []);
 
     return (
         
@@ -24,9 +33,10 @@ export const PetScreen = ({route}) => {
                     <Text style={styles.secondaryInfo}>{pet.description}</Text>
                 </View>
                 
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>¡Quiero adoptar!</Text>
-                </TouchableOpacity>
+                { role == 'ROLE_PERSON' &&
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttonText}>¡Quiero adoptar!</Text>
+                    </TouchableOpacity>}
             </SafeAreaView>
         </ImageBackground>
     );

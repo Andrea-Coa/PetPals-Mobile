@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Button } from 'react-native';
 import { SafeAreaView, } from 'react-native-safe-area-context';
-import { HelperText } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { postPet } from '../api';
 import { NewPetForm } from '../components/NewPetForm';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';

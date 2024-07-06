@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import { fetchPetsDefault, getRoleBasedOnToken } from '../api';
+import { fetchPetsDefault, fetchPetsSpecies, getRoleBasedOnToken } from '../api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageBackground, Text, StyleSheet, FlatList, View, TouchableOpacity } from 'react-native';
 import { PetCard } from '../components/PetCard';
 import {useNavigation} from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+
 
 export const PetFeedScreen = () => {
     const [pets, setPets] = useState([]);
+    const [species, setSpecies] = useState("todos");
     const [page, setPage] = useState(0);
     const [role, setRole] = useState(null);
     const navigation = useNavigation();
 
     useEffect(()=> {
         const getPetsDefault = async() => {
-            try {
+            if (species != "todos") {
+              try {
+                const res = await fetchPetsSpecies(page, species);
+                setPets(res.content);
+              } catch (error ) {
+                console.error('FAILED TO FETCH BY SPECIES', error);
+              }
+            }
+            else {
+              try {
                 const res = await fetchPetsDefault(page);
                 console.log("dshfajd", res);
                 setPets(res.content);
             } catch(error) {
                 console.error('FAILED TO FETCH PETS');
-            }
+              }
+            } 
+            
         };
         const fetchRole = async () => {
           const roleFromToken = await getRoleBasedOnToken();
@@ -28,7 +42,10 @@ export const PetFeedScreen = () => {
         };
         fetchRole();
         getPetsDefault();
-    }, []);
+    }, [species]);
+
+    console.log('SPECIES', species);
+
     console.log("from feed:",role);
     return (
         <ImageBackground source={require("../assets/huella-perro.png")} style={{flex:1}}>
@@ -43,6 +60,24 @@ export const PetFeedScreen = () => {
 
               </TouchableOpacity>
           )}
+          <View style={styles.pickerbox}>
+
+            <Picker style={{ color:'white' }}
+            selectedValue={species}
+            onValueChange={(itemValue) => setSpecies(itemValue)}
+            accessible={true}
+            accessibilityLabel="buscar por especie"
+          >
+            <Picker.Item label="Todos" value="todos" />
+            <Picker.Item label="Perro" value="DOG" />
+            <Picker.Item label="Gato" value="CAT" />
+            <Picker.Item label="Roedor" value="RODENT" />
+            <Picker.Item label="Ave" value="BIRD" />
+            <Picker.Item label="Otro" value="OTHER" />
+
+          </Picker>
+          </View>
+
           <FlatList
             data={pets.length % 2 === 0 ? pets : [...pets, { id: 'empty', empty: true }]}
             keyExtractor={(item) => item.id.toString()}
@@ -88,6 +123,12 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'semibold',
       paddingHorizontal:8
+  }, 
+  pickerbox: {
+    justifyContent: 'center',
+    width:'100%',
+    height:40,
+    width:'40%',
+    padding:4
   }
-
   });

@@ -19,7 +19,6 @@ import SubscriptorsFeedScreen from '../screens/SubscriptorsFeedScreen';
 import MyPetsFeedScreen from '../screens/MyPetsFeedScreen';
 import { PetFeedScreen } from '../screens/PetFeedScreen';
 import { PetScreen } from '../screens/PetScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CreatePetScreen } from '../screens/CreatePetScreen';
 
 const Stack = createStackNavigator();

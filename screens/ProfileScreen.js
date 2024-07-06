@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchUserProfile } from '../api';
 import { Button, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store'
 import { useNavigation } from '@react-navigation/native';
 
 const foregroundUri = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/nbgzcrq0gafkkiafmkeq?_a=DATAdtAAZAA0";
@@ -13,7 +13,7 @@ export const ProfileScreen = () => {
   const navigation = useNavigation();
 
   const logout = async () => {
-    await AsyncStorage.removeItem('token');
+    await SecureStore.deleteItemAsync('token');
     navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],

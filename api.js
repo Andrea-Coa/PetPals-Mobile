@@ -1,23 +1,22 @@
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.235.225:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
-    const token = await AsyncStorage.getItem('token');
+    const token = await SecureStore.getItemAsync('token');
     if (token !== null) {
       const decodedToken = jwtDecode(token);
       console.log(decodedToken.role);
       return decodedToken.role;
     } else {
-      console.error('Token no encontrado en AsyncStorage');
+      console.error('Token no encontrado en SecureStore');
       return null;
     }
   } catch (error) {
-    console.error('Error al obtener el token de AsyncStorage', error);
+    console.error('Error al obtener el token de SecureStore', error);
     return null;
   }
 };
@@ -34,7 +33,7 @@ export async function fetchLogin(email, password) {
 
 export const fetchActivityInProgress = async (page) => {
   try {
-    const token = await AsyncStorage.getItem('token');
+    const token = await SecureStore.getItemAsync('token');
     const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=100`;
     console.log(url);
     const response = await axios.get(url, {
@@ -50,7 +49,7 @@ export const fetchActivityInProgress = async (page) => {
 
 export const fetchSingleActivity = async (id) => {
   try {
-    const token = await AsyncStorage.getItem('token');
+    const token = await SecureStore.getItemAsync('token');
     const url = `${API_URL}/activities/${id}`;
     console.log(url);
     const response = await axios.get(url, {
@@ -66,7 +65,7 @@ export const fetchSingleActivity = async (id) => {
 
 export const fetchUserProfile = async () => {
   const role = await getRoleBasedOnToken();
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItemAsync('token');
   
   try {
     if (role == "ROLE_PERSON") {
@@ -95,7 +94,7 @@ export const fetchUserProfile = async () => {
 }
 
 export const updateProfile = async (name, password) => {
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItemAsync('token');
   
   console.log("Token:", token);
   console.log("API URL:", `${API_URL}/person`);
@@ -121,7 +120,7 @@ export const updateProfile = async (name, password) => {
 };
 
 export const updateCompanyProfile = async (name) => {
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItemAsync('token');
   
   console.log("Token:", token);
   console.log("API URL:", `${API_URL}/company`);
@@ -146,7 +145,7 @@ export const updateCompanyProfile = async (name) => {
 };
 
 export const fetchPetsDefault = async (page) => {
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItemAsync('token');
     const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=20`, {
       headers: {
         'Authorization':`Bearer ${token}`,
@@ -156,8 +155,19 @@ export const fetchPetsDefault = async (page) => {
     return response.data;
 }
 
+export const fetchPetsSpecies = async(page, species) => {
+  const token = await SecureStore.getItemAsync('token');
+  const response = await axios.get(`${API_URL}/pets/species/${species}?page=${page}&size=20`, {
+    headers: {
+      'Authorization':`Bearer ${token}`,
+    },
+  });
+  console.log(response.data);
+  return response.data;
+}
+
 export const postPet = async(body) => {
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItemAsync('token');
   try
   {
     await axios.post(`${API_URL}/pets`, body, {
@@ -171,7 +181,7 @@ export const postPet = async(body) => {
 }
 
 export const fetchCreateActivity = async (newActivity) => {
-  const token = await AsyncStorage.getItem('token');
+  const token = await SecureStore.getItemAsync('token');
   console.log('Token:', token); // Verificar si el token está presente
   try {
     const response = await axios.post(`${API_URL}/activities`, newActivity, {
