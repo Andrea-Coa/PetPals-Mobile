@@ -8,6 +8,7 @@ import ActivityMap from './ActivityMap';
 const ActivityScreen = (props) => {
   const [activity, setActivity] = useState(null);
   const navigation = useNavigation();
+  const defaultImage = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/nbgzcrq0gafkkiafmkeq?_a=DATAdtAAZAA0";
 
   useEffect(() => {
     const getActivity = async () => {
@@ -28,7 +29,7 @@ const ActivityScreen = (props) => {
         {activity && 
           <ScrollView contentContainerStyle={styles.whitebox}>
             <Image 
-              source={{uri:"https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/nbgzcrq0gafkkiafmkeq?_a=DATAdtAAZAA0"}}
+              source={{uri: activity.image ? activity.image : defaultImage}}
               style={{width:300, height:300}}
               resizeMode='cover'
             />

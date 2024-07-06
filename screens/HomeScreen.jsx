@@ -17,9 +17,9 @@ export default function HomeScreen({ navigation }) {
 const [accessToken, setAccessToken] = React.useState(null);
 const [User, setUser] = React.useState(null);
 const [request, response, promptAsync] = Google.useIdTokenAuthRequest({ 
-  androidClientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',  //Poner el ID de cliente de Google
-  iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com', //Poner el ID de cliente de Google
-  expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com'}); //Poner el ID de cliente de Google
+  androidClientId: '229859891265-02a5s7qub3oghdissu3qju4g6j32c154.apps.googleusercontent.com',  //Poner el ID de cliente de Google
+  iosClientId: '229859891265-n5dbjbmgnf1el4vf289c90i9a4gdicut.apps.googleusercontent.com', //Poner el ID de cliente de Google
+  webExpoClientId: '229859891265-6i4hjf3dsrorthhu2jakn90a6pgqedi9.apps.googleusercontent.com'}); //Poner el ID de cliente de Google
 
   React.useEffect(() => { 
     if (response?.type === 'success') {  

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserProfile } from '../api';
-import { Button, ImageBackground, Text, View, Image, StyleSheet } from 'react-native';
+import { Button, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,10 @@ export const ProfileScreen = () => {
 
   const logout = async () => {
     await AsyncStorage.removeItem('token');
-    navigation.navigate('Home');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    });
   };
 
   useEffect(() => {
@@ -55,9 +58,19 @@ export const ProfileScreen = () => {
           }
         </View>
 
-        <Button title='Editar cuenta' onPress={() => navigation.navigate('EditProfile')}></Button>
-        <Button title='Cerrar sesión' onPress={logout}></Button>
-        <Button title='Eliminar cuenta'></Button>
+        <View style={styles.buttonRow}>
+          <View style={styles.buttonColumn}>
+            <Button title='Editar cuenta' onPress={() => navigation.navigate('EditProfile')} />
+            <Button title='Cerrar sesión' onPress={logout} />
+            <Button title='Eliminar cuenta' />
+          </View>
+
+          <View style={styles.buttonColumn}>
+            <Button title='Sucursales' onPress={() => navigation.navigate('SucursalesFeedScreen')} />
+            <Button title='Suscriptores' onPress={() => navigation.navigate('SubscriptorsFeedScreen')} />
+            <Button title='Mascotas' onPress={() => navigation.navigate('MyPetsFeedScreen')} />
+          </View>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -109,5 +122,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    width: '100%',
+  },
+  buttonColumn: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    flex: 1,
   },
 });

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageBackground, Text, StyleSheet, FlatList, View, TouchableOpacity } from 'react-native';
 import { PetCard } from '../components/PetCard';
 import {useNavigation} from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export const PetFeedScreen = () => {
     const [pets, setPets] = useState([]);
@@ -37,7 +37,7 @@ export const PetFeedScreen = () => {
               <TouchableOpacity style={styles.button} onPress={()=>{navigation.navigate('CreatePet')}}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                <Ionicons name="create" size={24} color="white" />
+                <FontAwesome5 name="dog" size={24} color="white" />
                 <Text style={styles.buttonText}>Agregar mascota</Text>
                 </View>
 
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
       color: '#FFFFFF',
       fontSize: 16,
       fontWeight: 'semibold',
+      paddingHorizontal:8
   }
 
   });

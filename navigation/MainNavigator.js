@@ -7,25 +7,27 @@ import RegisterScreen from '../screens/RegisterScreen';
 import RegisterExtraScreen from '../screens/RegisterExtraScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ActivityFeedScreen from '../screens/ActivityFeedScreen';
-import ActivityScreen from '../screens/ActivityScreen'; // Importar correctamente
-import ActivityMap from '../screens/ActivityMap'; // Importar correctamente
+import ActivityScreen from '../screens/ActivityScreen'; 
+import ActivityMap from '../screens/ActivityMap'; 
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { ProfileScreen } from '../screens/ProfileScreen';
-import EditProfileScreen from '../screens/EditProfileScreen'; // Agregar esta línea
+import EditProfileScreen from '../screens/EditProfileScreen'; 
 import CreateActivityScreen from '../screens/CreateActivityScreen';
+import SucursalesFeedScreen from '../screens/SucursalesFeedScreen';
+import SubscriptorsFeedScreen from '../screens/SubscriptorsFeedScreen';
+import MyPetsFeedScreen from '../screens/MyPetsFeedScreen';
 import { PetFeedScreen } from '../screens/PetFeedScreen';
 import { PetScreen } from '../screens/PetScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CustomCamera } from '../components/CustomCamera';
 import { CreatePetScreen } from '../screens/CreatePetScreen';
-
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const StackActivity = createStackNavigator();
 const StackProfile = createStackNavigator();
 const StackPet = createStackNavigator();
+
 const ActivityStack = () => {
   return (
     <StackActivity.Navigator initialRouteName='Eventos'>
@@ -40,8 +42,11 @@ const ActivityStack = () => {
 const ProfileStack = () => {
   return (
     <StackProfile.Navigator initialRouteName='Profile'>
-      <StackActivity.Screen name='Profile' component={ProfileScreen} />
+      <StackProfile.Screen name='Profile' component={ProfileScreen} />
       <StackProfile.Screen name='EditProfile' component={EditProfileScreen} /> 
+      <StackProfile.Screen name='SucursalesFeedScreen' component={SucursalesFeedScreen} />
+      <StackProfile.Screen name='SubscriptorsFeedScreen' component={SubscriptorsFeedScreen} />
+      <StackProfile.Screen name='MyPetsFeedScreen' component={MyPetsFeedScreen} />
     </StackProfile.Navigator>
   )
 }
@@ -49,10 +54,9 @@ const ProfileStack = () => {
 const PetStack = () => {
   return (
     <StackPet.Navigator initialRouteName='PetFeed'>
-      <StackActivity.Screen name='PetFeed' component={PetFeedScreen} />
+      <StackPet.Screen name='PetFeed' component={PetFeedScreen} />
       <StackPet.Screen name='Pet' component={PetScreen} />
       <StackPet.Screen name='CreatePet' component={CreatePetScreen} />
-      <StackPet.Screen name='Camera' component={CustomCamera} />
     </StackPet.Navigator>
   )
 }
@@ -79,7 +83,7 @@ const NavigationTabs = () => {
           ),
         }} 
       />
-            <Tab.Screen
+      <Tab.Screen
         name='PetStack'
         component={PetStack}
         options= {{

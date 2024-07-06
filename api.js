@@ -35,7 +35,7 @@ export async function fetchLogin(email, password) {
 export const fetchActivityInProgress = async (page) => {
   try {
     const token = await AsyncStorage.getItem('token');
-    const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=10`;
+    const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=100`;
     console.log(url);
     const response = await axios.get(url, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -147,7 +147,7 @@ export const updateCompanyProfile = async (name) => {
 
 export const fetchPetsDefault = async (page) => {
   const token = await AsyncStorage.getItem('token');
-    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=10`, {
+    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=20`, {
       headers: {
         'Authorization':`Bearer ${token}`,
       },
@@ -169,3 +169,20 @@ export const postPet = async(body) => {
     console.error('FAILED TO POST PET');
   }
 }
+
+export const fetchCreateActivity = async (newActivity) => {
+  const token = await AsyncStorage.getItem('token');
+  console.log('Token:', token); // Verificar si el token está presente
+  try {
+    const response = await axios.post(`${API_URL}/activities`, newActivity, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    console.log('Response:', response.data); // Verificar la respuesta
+    return response.data;
+  } catch (error) {
+    console.error('ERROR CREATING ACTIVITY', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};

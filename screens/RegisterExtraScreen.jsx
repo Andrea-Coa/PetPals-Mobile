@@ -26,7 +26,10 @@ export default function RegisterExtraScreen({ route, navigation }) {
         await AsyncStorage.setItem('token', token);
         Alert.alert('Success', 'User registered successfully');
         // Redirigir a la pantalla de inicio de sesión
-        navigation.navigate('Login');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login', params: { fromRegisterExtra: true }  }],
+        });
       }
     } catch (error) {
       if (error.response) {
@@ -41,7 +44,6 @@ export default function RegisterExtraScreen({ route, navigation }) {
       }
     }
   };
-  
 
   return (
     <SafeAreaProvider>
