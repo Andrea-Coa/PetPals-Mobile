@@ -1,45 +1,48 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, ImageBackground, FlatList, Image, TouchableOpacity } from 'react-native';
-import { fetchMySubscriptions, fetchSubscriptors } from '../api';
+import { fetchMySubscriptions } from '../api';
 import { FontAwesome } from '@expo/vector-icons';
 
-const SubscriptorsFeedScreen = () => {
+
+export const MySubscriptionsFeedScreen = () => {
     const [subscriptions, setSubscriptions] = useState([]);
-    const [page, setPage] = useState(0);
 
     useState(()=> {
         const fetchSubscriptions = async() => {
           try {
-            const res = await fetchSubscriptors(page);
-            setSubscriptions(res.content);
+            const res = await fetchMySubscriptions();
+            setSubscriptions(res);
           } catch(error) {
-            console.error('Failed to fetch your subscriptors', error);
+            console.error('Failed to fetch your subscriptions', error);
           }
         }
         fetchSubscriptions();
-      }, [page]);
+      }, []);
+      console.log(subscriptions);
     return (
         <ImageBackground source={ require("../assets/dog_bg.png")} style={styles.background}>
 
     <View style={styles.container}>
       <View style={styles.titlebox}>
-        <Text style={styles.title}>Mis suscriptores</Text>
+        <Text style={styles.title}>Mis suscripciones</Text>
       </View>
       {subscriptions[0] &&
       <FlatList
         data={subscriptions}
-        keyExtractor={(item)=> item.person.id.toString()}
+        keyExtractor={(item)=> item.company.id.toString()}
         renderItem={({item})=> (
           <View style={styles.itemContainer}>
-            {item.person.image ? (
-                <Image style={styles.image} source={{uri: item.person.image}}/>
+            {item.company.image ? (
+                <Image style={styles.image} source={{uri: item.company.image}}/>
             ) : (
-                <FontAwesome name="user" size={32} color="white" />
+                <FontAwesome name="users" size={32} color="white" />
             )}
             <View style={styles.itemTextContainer}>
-              <Text style={{ color:'white' }}>{item.person.name}</Text>
+              <Text style={{ color:'white' }}>{item.company.name}</Text>
             </View>
-
+            <TouchableOpacity style={styles.itemTextContainer}>
+                <Text style={styles.cancel}>cancelar</Text>
+            </TouchableOpacity>
           </View>
         )}>
 
@@ -84,6 +87,4 @@ const styles = StyleSheet.create({
     cancel: {
         color:'#00CED1'
     }
-});
-
-export default SubscriptorsFeedScreen;
+})

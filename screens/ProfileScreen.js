@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { fetchUserProfile } from '../api';
-import { Button, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { startTransition, useEffect, useState } from 'react';
+import { fetchUserProfile, getRoleBasedOnToken } from '../api';
+import { Button, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store'
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 const foregroundUri = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/nbgzcrq0gafkkiafmkeq?_a=DATAdtAAZAA0";
 const ProfilePicUri = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/rnhafgpvrssjyk2bufre?_a=DATAdtAAZAA0";
 
 export const ProfileScreen = () => {
   const [userData, setUserData] = useState({});
+  const [role, setRole] = useState(null);
   const navigation = useNavigation();
 
   const logout = async () => {
@@ -29,17 +33,24 @@ export const ProfileScreen = () => {
         console.error('profileScreen:', error);
       }
     };
+    const getRole = async() => {
+      const r = await getRoleBasedOnToken();
+      setRole(r);
+    }
     getProfile();
+    getRole();
   }, []);
 
   return (
     <ImageBackground source={require("../assets/dog_bg.png")} style={styles.background}>
+      <ScrollView>
       <ImageBackground source={{ uri: foregroundUri }} style={styles.banner}>
         <View style={styles.circle}>
           <Image source={{ uri: ProfilePicUri }} style={styles.picture} />
         </View>
       </ImageBackground>
-      <SafeAreaView>
+      
+      <SafeAreaView style>
         <View style={styles.mainInfo}>
           <Text style={styles.username}>{userData.name}</Text>
           <Text style={styles.email}>{userData.email}</Text>
@@ -58,20 +69,87 @@ export const ProfileScreen = () => {
           }
         </View>
 
-        <View style={styles.buttonRow}>
-          <View style={styles.buttonColumn}>
-            <Button title='Editar cuenta' onPress={() => navigation.navigate('EditProfile')} />
-            <Button title='Cerrar sesión' onPress={logout} />
-            <Button title='Eliminar cuenta' />
+        <View style={styles.buttonColumn}>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.edit}
+              onPress={() => navigation.navigate('EditProfile')}
+              >
+              <Ionicons name="pencil" size={16} color="white" />
+              <Text style={styles.editText}>Editar cuenta</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.logout}
+              onPress={logout}>
+              <Text style={styles.logoutText}>Cerrar sesión</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.buttonColumn}>
-            <Button title='Sucursales' onPress={() => navigation.navigate('SucursalesFeedScreen')} />
-            <Button title='Suscriptores' onPress={() => navigation.navigate('SubscriptorsFeedScreen')} />
-            <Button title='Mascotas' onPress={() => navigation.navigate('MyPetsFeedScreen')} />
+
+            {role == 'ROLE_COMPANY' && 
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('SucursalesFeedScreen', { locations: userData.locations })}              
+              style={styles.whitebox}>
+              <View style={styles.cyanbox}>
+                <Entypo name="location" size={32} color="#00CED1" />
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={{ fontWeight:'bold' }}>Mis sucursales</Text>
+                <Text style={{ flexWrap:'wrap' }}>Todas las ubicaciones de la empresa.</Text>
+              </View>
+            </TouchableOpacity>
+            }
+
+            {role == 'ROLE_COMPANY' && 
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('SubscriptorsFeedScreen')}
+              style={styles.whitebox}>
+                <View style={styles.cyanbox}>
+                <FontAwesome name="user" size={32} color="#00CED1" />
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={{ fontWeight:'bold' }}>Mis suscriptores</Text>
+                <Text style={{ flexWrap:'wrap' }}>Las personas que se han suscrito a tu cuenta.</Text>
+              </View>
+            </TouchableOpacity>
+            }
+
+            {role == 'ROLE_PERSON' &&
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('MyPetsFeedScreen')}
+              style={styles.whitebox}>
+              <View style={styles.cyanbox}>
+                <Ionicons name="paw" size={32} color="#00CED1" />
+              </View>
+              <View style={styles.textContainer}>
+              <Text style={{ fontWeight:'bold' }}>Mis mascotas</Text>
+              <Text style={{ flexWrap:'wrap' }}>Mira todas las mascotas que has adoptado.</Text>
+              </View>
+            </TouchableOpacity>
+            }
+
+            {role == 'ROLE_PERSON' &&
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('MySubscriptionsFeedScreen')} // navigate to my subsctiptions!!! 
+              style={styles.whitebox}>
+              <View style={styles.cyanbox}>
+                <FontAwesome name="users" size={32} color="#00CED1" />
+              </View>
+              <View style={styles.textContainer}>
+              <Text style={{ fontWeight:'bold' }}>Mis suscripciones</Text>
+              <Text style={{ flexWrap:'wrap' }}>Cuentas a las que te has suscrito.</Text>
+              </View>
+            </TouchableOpacity>
+            }
           </View>
+
+          <TouchableOpacity style={styles.deleteAccount}>
+              <Text style={styles.deleteAccountText}>Eliminar cuenta</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -125,13 +203,65 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+    marginBottom: 40,
     marginTop: 20,
-    width: '100%',
+    width: '90%',
+    paddingHorizontal:10
   },
   buttonColumn: {
     flexDirection: 'column',
     alignItems: 'center',
     flex: 1,
   },
+  edit: {
+    backgroundColor:'#00CED1',
+    borderRadius:4,
+    paddingHorizontal:12,
+    paddingVertical:8,
+    flexDirection:'row'
+  },
+  editText: {
+    color:'white',
+    paddingHorizontal:8
+  },
+  logout: {
+    borderRadius:4,
+    paddingHorizontal:12,
+    paddingVertical:8,
+    flexDirection:'row'
+  },
+  logoutText: {
+    color:'white',
+    fontWeight:'bold',
+    textDecorationLine: 'underline'
+  },
+  deleteAccount:{
+    margin:40
+  },
+  deleteAccountText: {
+    color:'red',
+    fontWeight:'bold',
+    textDecorationLine: 'underline'
+  },
+  whitebox: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 24,
+    marginBottom:12,
+    flexDirection:'row'
+  },
+  cyanbox: { 
+    backgroundColor:'rgba(0, 206, 209, 0.3)', 
+    width:50, 
+    height:50, 
+    alignItems:'center', 
+    justifyContent:'center'},
+  textContainer: {
+    justifyContent: 'center',
+    paddingHorizontal:8,
+    flex:1
+  },
+  
 });

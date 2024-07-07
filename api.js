@@ -2,7 +2,7 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = 'http://192.168.235.225:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
@@ -196,3 +196,67 @@ export const fetchCreateActivity = async (newActivity) => {
     throw error;
   }
 };
+
+export const fetchMyPets = async(page) => {
+  const token = await SecureStore.getItemAsync('token');
+  console.log(token);
+  try {
+    const response = await axios.get(`${API_URL}/adoptions/mine?page=${page}&size=10`, {
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch(error) {
+    console.error('api.js, fetch my pets', error);
+    return null;
+  }
+}
+
+export const fetchMySubscriptions = async() => {
+  const token = await SecureStore.getItemAsync('token');
+  console.log(token);
+  try {
+    const response = await axios.get(`${API_URL}/subscriptions/person`, {
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch(error) {
+    console.error('api.js, fetch my subscriptions', error);
+    return null;
+  }
+}
+
+export const fetchSubscriptors = async(page) => {
+  const token = await SecureStore.getItemAsync('token');
+  console.log(token);
+  try {
+    const response = await axios.get(`${API_URL}/subscriptions/company?page=${page}&size=50`, {
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch(error) {
+    console.error('api.js, fetch my subscriptors', error);
+    return null;
+  }
+}
+
+export const fetchAdopt = async(id, body) => {
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    await axios.post(`${API_URL}/adoptions/${id}`, body , {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  } catch (error) {
+    console.log('FAILED TO ADOPT, api.js', error);
+  }
+}

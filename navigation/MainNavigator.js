@@ -15,11 +15,12 @@ import { ProfileScreen } from '../screens/ProfileScreen';
 import EditProfileScreen from '../screens/EditProfileScreen'; 
 import CreateActivityScreen from '../screens/CreateActivityScreen';
 import SucursalesFeedScreen from '../screens/SucursalesFeedScreen';
-import SubscriptorsFeedScreen from '../screens/SubscriptorsFeedScreen';
 import MyPetsFeedScreen from '../screens/MyPetsFeedScreen';
 import { PetFeedScreen } from '../screens/PetFeedScreen';
 import { PetScreen } from '../screens/PetScreen';
 import { CreatePetScreen } from '../screens/CreatePetScreen';
+import { MySubscriptionsFeedScreen } from '../screens/MySubscriptionsFeedScreen';
+import SubscriptorsFeedScreen from '../screens/SubscriptorsFeedScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +47,8 @@ const ProfileStack = () => {
       <StackProfile.Screen name='SucursalesFeedScreen' component={SucursalesFeedScreen} />
       <StackProfile.Screen name='SubscriptorsFeedScreen' component={SubscriptorsFeedScreen} />
       <StackProfile.Screen name='MyPetsFeedScreen' component={MyPetsFeedScreen} />
+      <StackProfile.Screen name='MySubscriptionsFeedScreen' component={MySubscriptionsFeedScreen} />
+
     </StackProfile.Navigator>
   )
 }
@@ -78,8 +81,10 @@ const NavigationTabs = () => {
             <Ionicons 
               name='grid-outline' 
               size={size} 
-              color={color} />
+              color={color}
+              style={{marginBottom:-10}} />
           ),
+          tabBarLabel:''
         }} 
       />
       <Tab.Screen
@@ -91,8 +96,10 @@ const NavigationTabs = () => {
             <Ionicons 
             name="paw-outline" 
             size={size} 
-            color={color} />
+            color={color} 
+            style={{marginBottom:-10}}/>
           ),
+          tabBarLabel:''
         }} />
       <Tab.Screen
         name='ProfileStack'
@@ -103,8 +110,10 @@ const NavigationTabs = () => {
             <AntDesign 
             name="user" 
             size={size} 
-            color={color} />
+            color={color} 
+            style={{marginBottom:-10}}/>
           ),
+          tabBarLabel:''
         }} />
     </Tab.Navigator>
   );
