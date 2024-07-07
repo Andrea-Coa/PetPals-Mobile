@@ -25,6 +25,7 @@ import {MyPetsCompanyScreen} from '../screens/MyPetsCompanyScreen'
 import { ChangeProfilePhotoScreen } from '../screens/ChangeProfilePhotoScreen';
 import { AddCompanyLocationScreen } from '../screens/AddCompanyLocationScreen';
 import { PublicCompanyProfileScreen } from '../screens/PublicCompanyProfileScreen';
+import { ChangeBannerScreen } from '../screens/ChangeBannerScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,6 +56,7 @@ const ProfileStack = () => {
       <StackProfile.Screen name='MyPetsCompanyScreen' component={MyPetsCompanyScreen} />
       <StackProfile.Screen name='ChangeProfilePhoto' component={ChangeProfilePhotoScreen} />
       <StackProfile.Screen name='AddCompanyLocation' component={AddCompanyLocationScreen} />
+      <StackProfile.Screen name='ChangeBanner' component={ChangeBannerScreen} />
     </StackProfile.Navigator>
   )
 }

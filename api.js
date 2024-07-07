@@ -300,6 +300,29 @@ export const fetchUpdateProfilePhoto = async(body) => {
   }
 }
 
+export const fetchUpdateBannerPhoto = async(body) => {
+  console.log(body)
+  const token = await SecureStore.getItemAsync('token');
+  const role = await getRoleBasedOnToken();
+  try {
+    if (role == 'ROLE_COMPANY') {
+      await axios.patch(`${API_URL}/company/me/banner`, body , {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } else {
+      await axios.patch(`${API_URL}/person/me/banner`, body , {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    }
+  } catch(error) {
+    console.error('failed to update profile photo, api.js', error);
+  }
+}
+
 export const fetchAddLocation = async(body) => {
   const token = await SecureStore.getItemAsync('token');
   console.log(body)
