@@ -54,10 +54,10 @@ const ActivityMap = ({ coordinates }) => {
             style={{ height: 40, width: 40 }}
           />
         </Marker>
-        <Marker
+        {userLocation.latitude && <Marker
           coordinate={userLocation}
           title="ME"
-        />
+        />}
       </MapView>
     </View>
   );

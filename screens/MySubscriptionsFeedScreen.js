@@ -32,8 +32,8 @@ export const MySubscriptionsFeedScreen = () => {
         keyExtractor={(item)=> item.company.id.toString()}
         renderItem={({item})=> (
           <View style={styles.itemContainer}>
-            {item.company.image ? (
-                <Image style={styles.image} source={{uri: item.company.image}}/>
+            {item.company.profileImage ? (
+                <Image style={styles.image} source={{uri: item.company.profileImage}}/>
             ) : (
                 <FontAwesome name="users" size={32} color="white" />
             )}

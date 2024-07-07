@@ -1,6 +1,6 @@
 import React, { startTransition, useEffect, useState } from 'react';
 import { fetchUserProfile, getRoleBasedOnToken } from '../api';
-import { Button, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Button, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity, ScrollView, TouchableHighlight } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store'
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-const foregroundUri = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/nbgzcrq0gafkkiafmkeq?_a=DATAdtAAZAA0";
+const foregroundUri = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/nagmdobzj6ekxuqjokp2?_a=DATAdtAAZAA0";
 const ProfilePicUri = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/rnhafgpvrssjyk2bufre?_a=DATAdtAAZAA0";
 
 export const ProfileScreen = () => {
@@ -23,7 +23,7 @@ export const ProfileScreen = () => {
       routes: [{ name: 'Home' }],
     });
   };
-
+console.log(userData);
   useEffect(() => {
     const getProfile = async () => {
       try {
@@ -44,9 +44,11 @@ export const ProfileScreen = () => {
   return (
     <ImageBackground source={require("../assets/dog_bg.png")} style={styles.background}>
       <ScrollView>
-      <ImageBackground source={{ uri: foregroundUri }} style={styles.banner}>
+      <ImageBackground source={ { uri: userData.bannerImage ? userData.bannerImage : foregroundUri }} style={styles.banner}>
         <View style={styles.circle}>
-          <Image source={{ uri: ProfilePicUri }} style={styles.picture} />
+        <TouchableHighlight onPress={() => navigation.navigate('ChangeProfilePhoto', { currentPhoto: userData.profileImage })}>          
+        <Image source={ userData.profileImage ? {uri:userData.profileImage} :require('../assets/user-profile.jpg') } style={styles.picture} />
+          </TouchableHighlight>
         </View>
       </ImageBackground>
       
@@ -101,6 +103,7 @@ export const ProfileScreen = () => {
             </TouchableOpacity>
             }
 
+
             {role == 'ROLE_COMPANY' && 
             <TouchableOpacity 
               onPress={() => navigation.navigate('SubscriptorsFeedScreen')}
@@ -111,6 +114,20 @@ export const ProfileScreen = () => {
               <View style={styles.textContainer}>
                 <Text style={{ fontWeight:'bold' }}>Mis suscriptores</Text>
                 <Text style={{ flexWrap:'wrap' }}>Las personas que se han suscrito a tu cuenta.</Text>
+              </View>
+            </TouchableOpacity>
+            }
+
+            {role == 'ROLE_COMPANY' && 
+            <TouchableOpacity 
+            onPress={() => navigation.navigate('MyPetsCompanyScreen', { id: userData.id })}              
+            style={styles.whitebox}>
+              <View style={styles.cyanbox}>
+                <Ionicons name="paw" size={32} color="#00CED1" />
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={{ fontWeight:'bold' }}>Mis mascotas</Text>
+                <Text style={{ flexWrap:'wrap' }}>Las mascotas que has dado en adopción a través de Pet Pals.</Text>
               </View>
             </TouchableOpacity>
             }

@@ -21,6 +21,10 @@ import { PetScreen } from '../screens/PetScreen';
 import { CreatePetScreen } from '../screens/CreatePetScreen';
 import { MySubscriptionsFeedScreen } from '../screens/MySubscriptionsFeedScreen';
 import SubscriptorsFeedScreen from '../screens/SubscriptorsFeedScreen';
+import {MyPetsCompanyScreen} from '../screens/MyPetsCompanyScreen'
+import { ChangeProfilePhotoScreen } from '../screens/ChangeProfilePhotoScreen';
+import { AddCompanyLocationScreen } from '../screens/AddCompanyLocationScreen';
+import { PublicCompanyProfileScreen } from '../screens/PublicCompanyProfileScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,7 +52,9 @@ const ProfileStack = () => {
       <StackProfile.Screen name='SubscriptorsFeedScreen' component={SubscriptorsFeedScreen} />
       <StackProfile.Screen name='MyPetsFeedScreen' component={MyPetsFeedScreen} />
       <StackProfile.Screen name='MySubscriptionsFeedScreen' component={MySubscriptionsFeedScreen} />
-
+      <StackProfile.Screen name='MyPetsCompanyScreen' component={MyPetsCompanyScreen} />
+      <StackProfile.Screen name='ChangeProfilePhoto' component={ChangeProfilePhotoScreen} />
+      <StackProfile.Screen name='AddCompanyLocation' component={AddCompanyLocationScreen} />
     </StackProfile.Navigator>
   )
 }
@@ -133,6 +139,7 @@ const AppNavigator = () => {
         component={NavigationTabs} 
         options={{ headerShown: false }}
       />
+      <AppStack.Screen name="PublicCompanyProfile" component={PublicCompanyProfileScreen} />
     </AppStack.Navigator>
   );
 };
