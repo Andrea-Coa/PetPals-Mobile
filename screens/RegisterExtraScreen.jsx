@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ImageBackground, Alert } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store'
 import { fetchRegister } from '../api';
 
 // Importa la imagen de fondo
@@ -23,7 +23,7 @@ export default function RegisterExtraScreen({ route, navigation }) {
       if (response.status === 200) {
         const token = response.data.token;
         console.log('Token:', token); // Imprime el token en la consola
-        await AsyncStorage.setItem('token', token);
+        await SecureStore.setItemAsync('token', token);
         Alert.alert('Success', 'User registered successfully');
         // Redirigir a la pantalla de inicio de sesión
         navigation.reset({

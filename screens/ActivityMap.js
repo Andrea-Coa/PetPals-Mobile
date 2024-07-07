@@ -12,17 +12,21 @@ const ActivityMap = ({ coordinates }) => {
   const activityLocation = { latitude: coordinates.latitude, longitude: coordinates.longitude };
 
   const getPermissions = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Cannot display your location');
-      return;
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Cannot display your location');
+        return;
+      }
+      let loc = await Location.getCurrentPositionAsync({});
+      const current = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+      };
+      setUserLocation(current);
+    } catch (error) {
+      console.error('Error getting location permissions:', error);
     }
-    let loc = await Location.getCurrentPositionAsync({});
-    const current = {
-      latitude: loc.coords.latitude,
-      longitude: loc.coords.longitude,
-    };
-    setUserLocation(current);
   };
   console.log(userLocation);
 
@@ -51,10 +55,10 @@ const ActivityMap = ({ coordinates }) => {
             style={{ height: 40, width: 40 }}
           />
         </Marker>
-        <Marker
+        {userLocation.latitude && <Marker
           coordinate={userLocation}
           title="ME"
-        />
+        />}
       </MapView>
     </View>
   );

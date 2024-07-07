@@ -1,15 +1,43 @@
-import React from 'react'
-import { Text, ImageBackground, StyleSheet, Image, View, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, ImageBackground, StyleSheet, Image, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getRoleBasedOnToken } from '../api';
+import { getRoleBasedOnToken, fetchAdopt } from '../api';
 
-export const PetScreen = ({route}) => {
+export const PetScreen = ({route, navigation}) => {
+    const [role, setRole] = useState(null);
+    const [adopt, setAdopt] = useState(false);
+    const [adoptionDesc, setAdoptionDesc] = useState({description:null});
     const {pet} = route.params;
 
+    useEffect(() => {
+        const fetchRole = async () => {
+          const userRole = await getRoleBasedOnToken();
+          setRole(userRole);
+        };
+        fetchRole();
+      }, []);
+    
+    const handleCancel = () => {
+        setAdopt(!adopt);
+    }
+
+    const handleAdopt = async(id, body) => {
+        try {
+            await fetchAdopt(id, body);
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'PetFeed' }],
+              });
+        } catch(error) {
+            console.error('failed to adopt', error);
+        }
+    }
     return (
         
         <ImageBackground source={require("../assets/huella-perro.png")} style={styles.background}>
+                        <ScrollView >
             <SafeAreaView style={styles.container}>
+
             {pet.image ? (
                 <Image 
                     source={{uri: pet.image}}
@@ -24,10 +52,41 @@ export const PetScreen = ({route}) => {
                     <Text style={styles.secondaryInfo}>{pet.description}</Text>
                 </View>
                 
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>¡Quiero adoptar!</Text>
-                </TouchableOpacity>
+                { role == 'ROLE_PERSON' && !adopt &&
+                    <TouchableOpacity 
+                        style={styles.button} 
+                        onPress={handleCancel}>
+                        <Text style={styles.buttonText}>¡Quiero adoptar!</Text>
+                    </TouchableOpacity>}
+
+                {role == 'ROLE_PERSON' && adopt && 
+                <View style={styles.adoptionBox}>
+                    <View style={styles.adoptionInput}>
+                        <Text style={styles.prompt}>{`Agrega un mensaje para la compañía de ${pet.name}`}</Text>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={(value)=> setAdoptionDesc({...adoptionDesc, description
+                            :value})}
+                            multiline
+                        />
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity 
+                            style={styles.cancelButton} 
+                            onPress={handleCancel}>
+                            <Text style={styles.buttonText}>Cancelar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={styles.button} 
+                            onPress={()=>{handleAdopt(pet.id, adoptionDesc)}}>
+                            <Text style={styles.buttonText}>Adoptar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>}
             </SafeAreaView>
+            </ScrollView>
+
         </ImageBackground>
     );
 }
@@ -40,7 +99,7 @@ const styles = StyleSheet.create({
     background: {
         flex:1,
         resizeMode:'cover',
-        // justifyContent:'center'
+        justifyContent:'center'
     },
     image:{
         width:'84%',
@@ -68,12 +127,44 @@ const styles = StyleSheet.create({
         marginTop: 30,
         backgroundColor: '#00CED1',
         paddingVertical: 10,
-        paddingHorizontal: 110,
-        borderRadius: 10
+        borderRadius: 10,
+        width:'40%',
+        alignItems:'center'
     },
     buttonText: {
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: 'semibold',
-    }
+    }, 
+    cancelButton: {
+        marginTop: 30,
+        borderColor: '#00CED1',
+        borderWidth: 1,
+        backgroundColor: 'transparent',
+        paddingVertical: 10,
+        width:'40%',
+        borderRadius: 10,
+        alignItems:'center'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+    },
+    prompt: {
+        color:'white',
+        marginVertical:8,
+        padding:8
+    },
+    adoptionBox: {
+        width:'90%',
+        padding:12
+    },
+    input: {
+        height: 100,
+        width: '100%',
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        color: 'white',
+        padding: 10,
+        borderRadius: 5,
+    },
 })
