@@ -45,6 +45,9 @@ console.log(userData);
     <ImageBackground source={require("../assets/dog_bg.png")} style={styles.background}>
       <ScrollView>
       <ImageBackground source={ { uri: userData.bannerImage ? userData.bannerImage : foregroundUri }} style={styles.banner}>
+        <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10 }} onPress={() => navigation.navigate('ChangeBanner', {currentPhoto: userData.bannerImage})}>
+          <Entypo name="pencil" size={24} color="white" />
+        </TouchableOpacity>
         <View style={styles.circle}>
         <TouchableHighlight onPress={() => navigation.navigate('ChangeProfilePhoto', { currentPhoto: userData.profileImage })}>          
         <Image source={ userData.profileImage ? {uri:userData.profileImage} :require('../assets/user-profile.jpg') } style={styles.picture} />

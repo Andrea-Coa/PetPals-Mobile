@@ -3,16 +3,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { Dimensions, ImageBackground, Text, View, Image, StyleSheet, TouchableOpacity, ScrollView, TouchableHighlight } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchUpdateProfilePhoto } from '../api';
+import { fetchUpdateBannerPhoto } from '../api';
 import {CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_PRESET} from '@env';
-
 const screenWidth = Dimensions.get('window').width;
 
-export const ChangeProfilePhotoScreen = ({route, navigation}) => {
+export const ChangeBannerScreen = ({route, navigation}) => {
     const cloudinaryUploadUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload?upload_preset=${CLOUDINARY_PRESET}&api_key=${CLOUDINARY_API_KEY}`;
     const { currentPhoto }= route.params;
-    console.log('CURRENT FOTOOOO', currentPhoto);
     const [newPhoto, setNewPhoto] = useState(null);
+    const defaultPhoto = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1719925435/nagmdobzj6ekxuqjokp2?_a=DATAdtAAZAA0";
 
     const openGallery = async() =>  {
         try {
@@ -34,7 +33,7 @@ export const ChangeProfilePhotoScreen = ({route, navigation}) => {
           let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [3,3],
+            aspect: [4,3],
             quality: 1,
           });
           
@@ -45,8 +44,7 @@ export const ChangeProfilePhotoScreen = ({route, navigation}) => {
           console.error('Error opening camera:', error);
         }
       };
-
-    const handleCancel = () => {
+      const handleCancel = () => {
         setNewPhoto(null);
     }
     const handleAccept = async() => {
@@ -80,16 +78,17 @@ export const ChangeProfilePhotoScreen = ({route, navigation}) => {
         if (newPhoto) {
             try {
                 console.log('XDDDD', newPhoto);
-                await fetchUpdateProfilePhoto({profileImage:newPhoto});
+                await fetchUpdateBannerPhoto({profileImage:newPhoto});
                 navigation.reset({
                     index:0,
                     routes: [{ name: 'Profile'}],
                 });
             } catch (error) {
-                console.error('error updating pfp', error);
+                console.error('error updating banner', error);
             }
         }
     }
+
     return (
         <ImageBackground source={require('../assets/huella-perro.png')} style={{ flex: 1}}>
             <ScrollView>
@@ -97,7 +96,7 @@ export const ChangeProfilePhotoScreen = ({route, navigation}) => {
                     {/* <Text style={ styles.title }>Cambiar foto de perfil</Text> */}
                     <View style={ styles.imageContainer }>
                     <Image 
-                        source={newPhoto ? {uri: newPhoto} : currentPhoto ? {uri: currentPhoto} : require('../assets/user-profile.jpg')}
+                        source={newPhoto ? {uri: newPhoto} : currentPhoto ? {uri: currentPhoto} : {uri: defaultPhoto}}
                         style={styles.image}
 />
                     </View>
@@ -137,15 +136,17 @@ const styles = StyleSheet.create({
         paddingHorizontal:30,
         fontWeight:'semi-bold'
     },
-    imageContainer:{
+    imageContainer: {
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
+        height: screenWidth * 0.6, // adjust this value as needed
         marginVertical: 20,
     },
     image: {
-        width: screenWidth * 0.9, 
-        height: screenWidth * 0.9, 
-        borderRadius: (screenWidth * 0.9) / 2, 
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
     },
     buttonContainer: {
         flexDirection: 'row', 
@@ -178,4 +179,4 @@ const styles = StyleSheet.create({
     buttonText: {
         color:'white'
     }
-})
+});
