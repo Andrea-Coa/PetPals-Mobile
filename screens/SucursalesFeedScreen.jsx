@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ImageBackground, FlatList, Image, TouchableOpac
 import { Entypo } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const SucursalesFeedScreen = () => {
+const SucursalesFeedScreen = ({navigation}) => {
   const route = useRoute();
   const { locations } = route.params;
 
@@ -15,6 +16,14 @@ const SucursalesFeedScreen = () => {
         <View style={styles.titlebox}>
           <Text style={styles.title}>Mis sucursales</Text>
         </View>
+
+        <TouchableOpacity 
+          style= {styles.button}
+          onPress={()=> navigation.navigate('AddCompanyLocation')}>
+          <MaterialIcons name="edit-location-alt" size={24} color="white" />
+          <Text style={ styles.buttonText }>Agregar una ubicación</Text>
+        </TouchableOpacity>
+
         {locations[0] &&
         <FlatList
           data={locations}
@@ -73,6 +82,21 @@ const styles = StyleSheet.create({
     color:'white',
     
   },
+  button: {
+    backgroundColor:'#00CED1',
+    paddingHorizontal:12,
+    paddingVertical:4,
+    marginHorizontal:12,
+    borderRadius:4,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  buttonText :{
+    color:'white',
+    paddingHorizontal:4,
+    paddingBottom:2
+  }
 });
 
 export default SucursalesFeedScreen;

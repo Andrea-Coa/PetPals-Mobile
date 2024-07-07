@@ -29,19 +29,24 @@ const SubscriptorsFeedScreen = () => {
       <FlatList
         data={subscriptions}
         keyExtractor={(item)=> item.person.id.toString()}
-        renderItem={({item})=> (
-          <View style={styles.itemContainer}>
-            {item.person.image ? (
-                <Image style={styles.image} source={{uri: item.person.image}}/>
-            ) : (
+        renderItem={({item})=> {
+          if (item.status == 'CANCELLED') {
+            return null;
+          }
+      
+          return (
+            <View style={styles.itemContainer}>
+              {item.person.profileImage ? (
+                <Image style={styles.image} source={{uri: item.person.profileImage}}/>
+              ) : (
                 <FontAwesome name="user" size={32} color="white" />
-            )}
-            <View style={styles.itemTextContainer}>
-              <Text style={{ color:'white' }}>{item.person.name}</Text>
+              )}
+              <View style={styles.itemTextContainer}>
+                <Text style={{ color:'white' }}>{item.person.name}</Text>
+              </View>
             </View>
-
-          </View>
-        )}>
+          );
+        }}>
 
       </FlatList>}
     </View>

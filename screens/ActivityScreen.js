@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchSingleActivity } from '../api';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, View, Image, ImageBackground, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, Image, ImageBackground, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActivityMap from './ActivityMap';
 
@@ -36,13 +36,16 @@ const ActivityScreen = (props) => {
             <View style={{width:'100%'}}>
               <Text style={styles.title}>{activity.name}</Text>
               <Text style={{ color: '#FF7F50' }}>{activity.activityType}</Text>
-              <Text style={{marginBottom: 20}}>By {activity.companyDto.name}</Text>
+              <TouchableOpacity onPress={()=> navigation.navigate('PublicCompanyProfile', {id:activity.companyDto.id})}>
+                <Text style={{marginBottom: 20}}>By {activity.companyDto.name}</Text>
+              </TouchableOpacity>
+
               <Text>Inicio: {activity.startDate}</Text>
               <Text>Fin: {activity.endDate}</Text>
               <Text style={{fontWeight:'bold', marginTop:20}}>Ubicación: </Text>
               <Text>{activity.locations && activity.locations.length > 0 ? activity.locations[0].address : 'No location available'}</Text>
             </View>
-            {activity.locations[0] && <ActivityMap coordinates={activity.locations[0]}/>}
+            {activity.locations && activity.locations[0] && <ActivityMap coordinates={activity.locations[0]}/>}
             
           </ScrollView>}
           {/* <Button title='MAP' onPress={()=>{navigation.navigate('Mapa')}}></Button> */}

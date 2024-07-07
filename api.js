@@ -214,6 +214,22 @@ export const fetchMyPets = async(page) => {
   }
 }
 
+export const fetchPetsCompany = async(id, page) => {
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    const response = await axios.get(`${API_URL}/pets/company/${id}?page=${page}&size=50`, {
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch(error) {
+    console.error('api.js, fetch pets in adoption', error);
+    return null;
+  }
+}
+
 export const fetchMySubscriptions = async() => {
   const token = await SecureStore.getItemAsync('token');
   console.log(token);
@@ -258,5 +274,98 @@ export const fetchAdopt = async(id, body) => {
     });
   } catch (error) {
     console.log('FAILED TO ADOPT, api.js', error);
+  }
+}
+
+export const fetchUpdateProfilePhoto = async(body) => {
+  console.log(body)
+  const token = await SecureStore.getItemAsync('token');
+  const role = await getRoleBasedOnToken();
+  try {
+    if (role == 'ROLE_COMPANY') {
+      await axios.patch(`${API_URL}/company/me/photo`, body , {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } else {
+      await axios.patch(`${API_URL}/person/me/photo`, body , {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    }
+  } catch(error) {
+    console.error('failed to update profile photo, api.js', error);
+  }
+}
+
+export const fetchAddLocation = async(body) => {
+  const token = await SecureStore.getItemAsync('token');
+  console.log(body)
+  try {
+    await axios.patch(`${API_URL}/company/location`, body , {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  } catch (error) {
+    console.log('FAILED to add location, api.js', error);
+  }
+}
+
+export const fetchPublicCompanyProfile = async(id) => {
+  console.log('DKHFJHAFDS', id);
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    const response = await axios.get(`${API_URL}/company/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log('FAILED to get a company, api.js', error);
+  }
+}
+
+export const fetchIsSubscribed = async(id) => {
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    response = await axios.get(`${API_URL}/subscriptions/mine/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+    console.log('subscribed!!!!1');
+    return true;
+  } catch(error) {
+    return false;
+  }
+}
+
+export const fetchSubscribe = async(id) => {
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    await axios.post(`${API_URL}/subscriptions/${id}`, {receiveNotifs:true}, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+  } catch(error) {
+    console.error('not subscribed HAHAHH', error);
+  }
+}
+
+export const fetchUnsubscribe = async(id) => {
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    await axios.delete(`${API_URL}/subscriptions/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+  } catch(error) {
+    console.error('not unsubscribed', error);
   }
 }
