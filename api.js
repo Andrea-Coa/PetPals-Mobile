@@ -2,7 +2,7 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.6:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {

@@ -4,16 +4,19 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomButton from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
 
+
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 WebBrowser.maybeCompleteAuthSession();
 
+
+
 // Importa la imagen
 const bgImage = require('../assets/dog_bg.png');
 
 export default function HomeScreen({ navigation }) {
-
+  
 const [accessToken, setAccessToken] = React.useState(null);
 const [User, setUser] = React.useState(null);
 const [request, response, promptAsync] = Google.useIdTokenAuthRequest({ 
@@ -22,6 +25,7 @@ const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
   webExpoClientId: '229859891265-6i4hjf3dsrorthhu2jakn90a6pgqedi9.apps.googleusercontent.com'}); //Poner el ID de cliente de Google
 
   React.useEffect(() => { 
+  
     if (response?.type === 'success') {  
       setAccessToken(response.authentication.accessToken);
       accessToken && fetchUserInfo();
@@ -47,6 +51,8 @@ const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
       );
     }
   }
+
+
 
   return (
     <SafeAreaProvider>

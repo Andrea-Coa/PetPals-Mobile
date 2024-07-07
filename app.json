@@ -6,13 +6,12 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "scheme":"petpals",
+    "scheme": "petpals",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.DBP.PetPalsMobile"
@@ -26,8 +25,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a7f290f2-fca6-4f30-ba45-b80cb7d83396"
+      }
     }
   }
 }
-
-
