@@ -57,25 +57,25 @@ export const PetFeedScreen = () => {
                 <FontAwesome5 name="dog" size={24} color="white" />
                 <Text style={styles.buttonText}>Agregar mascota</Text>
                 </View>
-
               </TouchableOpacity>
           )}
+
           <View style={styles.pickerbox}>
+            <Picker 
+              style={{ color:'white' }}
+              selectedValue={species}
+              onValueChange={(itemValue) => setSpecies(itemValue)}
+              accessible={true}
+              accessibilityLabel="buscar por especie"
+            >
+              <Picker.Item label="Todos" value="todos" />
+              <Picker.Item label="Perro" value="DOG" />
+              <Picker.Item label="Gato" value="CAT" />
+              <Picker.Item label="Roedor" value="RODENT" />
+              <Picker.Item label="Ave" value="BIRD" />
+              <Picker.Item label="Otro" value="OTHER" />
 
-            <Picker style={{ color:'white' }}
-            selectedValue={species}
-            onValueChange={(itemValue) => setSpecies(itemValue)}
-            accessible={true}
-            accessibilityLabel="buscar por especie"
-          >
-            <Picker.Item label="Todos" value="todos" />
-            <Picker.Item label="Perro" value="DOG" />
-            <Picker.Item label="Gato" value="CAT" />
-            <Picker.Item label="Roedor" value="RODENT" />
-            <Picker.Item label="Ave" value="BIRD" />
-            <Picker.Item label="Otro" value="OTHER" />
-
-          </Picker>
+            </Picker>
           </View>
 
           <FlatList
@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
       paddingHorizontal: 24,
       borderRadius: 8,
       marginHorizontal: 24,
-      alignItems:'center'
+      alignItems:'center',
+      marginTop: -30 // Para agregar algo de margen superior si es necesario
   },
   buttonText: {
       color: '#FFFFFF',
@@ -126,9 +127,13 @@ const styles = StyleSheet.create({
   }, 
   pickerbox: {
     justifyContent: 'center',
-    width:'100%',
-    height:40,
-    width:'40%',
-    padding:4
+    width: '95%', // Cambia esto según tu diseño
+    height: 40,
+    padding: 4,
+    backgroundColor: '#00CED1',
+    borderRadius: 8,
+    margin: 10,
+    marginBottom: 40, // Agrega margen inferior para separar el picker del botón
+    overflow: 'hidden', // Esto asegura que las opciones no seleccionadas sean visibles
   }
   });

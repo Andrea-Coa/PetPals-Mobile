@@ -2,7 +2,7 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.6:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
@@ -43,6 +43,22 @@ export const fetchActivityInProgress = async (page) => {
     return response.data;
   } catch (error) {
     console.error('Error al obtener actividades en progreso', error);
+    return null;
+  }
+};
+
+export const fetchActivitiesByType = async (page, type) => {
+  try {
+    const token = await SecureStore.getItemAsync('token');
+    const url = `${API_URL}/activities/type/${type}?page=${page}&size=100`;
+    console.log(url);
+    const response = await axios.get(url, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener actividades por tipo', error);
     return null;
   }
 };
