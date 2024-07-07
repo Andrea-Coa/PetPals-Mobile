@@ -248,3 +248,15 @@ export const fetchSubscriptors = async(page) => {
   }
 }
 
+export const fetchAdopt = async(id, body) => {
+  const token = await SecureStore.getItemAsync('token');
+  try {
+    await axios.post(`${API_URL}/adoptions/${id}`, body , {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  } catch (error) {
+    console.log('FAILED TO ADOPT, api.js', error);
+  }
+}
