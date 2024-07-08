@@ -29,25 +29,15 @@ const ActivityFeedScreen = () => {
     try {
       if (type === "all") {
         const res = await fetchActivityInProgress(page);
-        setActivities(oldActivities => [...oldActivities, ...res.content]);
-        setTotalPages(res.totalPages);
+        setActivities(res.content);
       } else {
         const res = await fetchActivitiesByType(page, type);
-        setActivities(oldActivities => [...oldActivities, ...res.content]);
-        setTotalPages(res.totalPages);
-
+        setActivities(res.content);
       }
     } catch (error) {
       console.error('failed to fetch activities', error);
     }
   };
-  useEffect(() => {
-    setActivities([]);
-    setPage(0);
-  },[activityType]);
-
-console.log(totalPages);
-
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -57,25 +47,15 @@ console.log(totalPages);
     fetchRole();
   }, []);
 
-
-  const handleLoadMore = () => {
-    if (page < totalPages) {
-      setPage(oldPage => oldPage + 1);
-    }
-  };
-
-
   useEffect(() => {
     if (isFocused) {
       getActivities(page, activityType);
     }
   }, [isFocused, page, activityType]);
 
-  console.log(activities);
-
   return (
     <ImageBackground source={require("../assets/dog_bg.png")} style={{ flex: 1 }}>
-      {role === 'ROLE_COMPANY' && (
+      {role == 'ROLE_COMPANY' && (
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateActivity')}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="create" size={24} color="white" />
@@ -104,8 +84,6 @@ console.log(totalPages);
         <FlatList
           data ={activities}
           keyExtractor={(item)=> item.id.toString()}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
           renderItem={({item}) => (
             <TouchableOpacity onPress={() => {navigation.navigate('Evento', { id: item.id })}}>
               <View style={styles.itemBox}>

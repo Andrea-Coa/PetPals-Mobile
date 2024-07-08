@@ -34,7 +34,7 @@ export async function fetchLogin(email, password) {
 export const fetchActivityInProgress = async (page) => {
   try {
     const token = await SecureStore.getItemAsync('token');
-    const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=50`;
+    const url = `${API_URL}/activities/status/IN_PROGRESS?page=${page}&size=100`;
     console.log(url);
     const response = await axios.get(url, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -50,7 +50,7 @@ export const fetchActivityInProgress = async (page) => {
 export const fetchActivitiesByType = async (page, type) => {
   try {
     const token = await SecureStore.getItemAsync('token');
-    const url = `${API_URL}/activities/type/${type}?page=${page}&size=50`;
+    const url = `${API_URL}/activities/type/${type}?page=${page}&size=100`;
     console.log(url);
     const response = await axios.get(url, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -162,7 +162,7 @@ export const updateCompanyProfile = async (name) => {
 
 export const fetchPetsDefault = async (page) => {
   const token = await SecureStore.getItemAsync('token');
-    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=50`, {
+    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=100`, {
       headers: {
         'Authorization':`Bearer ${token}`,
       },
@@ -173,7 +173,7 @@ export const fetchPetsDefault = async (page) => {
 
 export const fetchPetsSpecies = async(page, species) => {
   const token = await SecureStore.getItemAsync('token');
-  const response = await axios.get(`${API_URL}/pets/species/${species}?page=${page}&size=50`, {
+  const response = await axios.get(`${API_URL}/pets/species/${species}?page=${page}&size=100`, {
     headers: {
       'Authorization':`Bearer ${token}`,
     },

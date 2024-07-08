@@ -16,61 +16,39 @@ export const PetFeedScreen = () => {
     const [totalPages, setTotalPages] = useState(0);
     const navigation = useNavigation();
 
-    // cargar el rol al inicio
-    useEffect(() => {
-    const fetchRole = async () => {
-      const roleFromToken = await getRoleBasedOnToken();
-      setRole(roleFromToken);
-    };
-    fetchRole(); } , []);
-
-    // función de traer pets
-    const getPetsDefault = async() => {
-      if (species != "todos") {
-        try {
-          const res = await fetchPetsSpecies(page, species);
-          setPets(oldPets => [...oldPets, ...res.content]);
-          setTotalPages(res.totalPages);
-
-        } catch (error ) {
-          console.error('FAILED TO FETCH BY SPECIES', error);
-        }
-      }
-      else {
-        try {
-          const res = await fetchPetsDefault(page);
-          console.log("dshfajd", res);
-          setPets(oldPets => [...oldPets, ...res.content]);
-          setTotalPages(res.totalPages);
-
-        } catch(error) {
-          console.error('FAILED TO FETCH PETS');
-        }
-      } 
-    }
-
-    // Cuando se cambia de especie vaciamos la lista y reiniciamos la cuenta de páginas, y traemos pets
     useEffect(()=> {
-      setPets([]);
-      setPage(0);
-    }
-    ,[species]);
+      const getPetsDefault = async() => {
+          if (species != "todos") {
+            try {
+              const res = await fetchPetsSpecies(page, species);
+              setPets(res.content);
+            } catch (error ) {
+              console.error('FAILED TO FETCH BY SPECIES', error);
+            }
+          }
+          else {
+            try {
+              const res = await fetchPetsDefault(page);
+              console.log("dshfajd", res);
+              setPets(res.content);
+          } catch(error) {
+              console.error('FAILED TO FETCH PETS');
+            }
+          } 
+          
+      };
+      const fetchRole = async () => {
+        const roleFromToken = await getRoleBasedOnToken();
+        setRole(roleFromToken);
+      };
+      fetchRole();
+      getPetsDefault();
+  }, [species]);
 
-    // cuando cambia la página traemos pets sin borrar los anteriores
-    useEffect(()=> {
-        getPetsDefault();
-    }, [page]);
+  console.log('SPECIES', species);
 
-    console.log('SPECIES', species);
+  console.log("from feed:",role);
 
-
-  const handleLoadMore = () => {
-    if (page < totalPages) {
-      setPage(oldPage => oldPage + 1);
-    }
-  };
-
-    console.log("from feed:",role);
     return (
         <ImageBackground source={require("../assets/huella-perro.png")} style={{flex:1}}>
           <SafeAreaView style={styles.container}>
@@ -106,8 +84,6 @@ export const PetFeedScreen = () => {
             data={pets.length % 2 === 0 ? pets : [...pets, { id: 'empty', empty: true }]}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
             renderItem={({ item }) => {
               if (item.empty) {
                 // si hay pets impares, se agrega una cajita vacía para que no se vea feo
