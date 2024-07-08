@@ -164,9 +164,9 @@ console.log(userData);
             }
           </View>
 
-          <TouchableOpacity style={styles.deleteAccount}>
+          {/* <TouchableOpacity style={styles.deleteAccount}>
               <Text style={styles.deleteAccountText}>Eliminar cuenta</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </SafeAreaView>
       </ScrollView>
