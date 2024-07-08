@@ -59,7 +59,7 @@ export const NewPetForm = ({ petImage }) => {
   const validateWeight = () => pet.weight <= 0.0;
 
   const isFormComplete = () => {
-    return pet.name && pet.birthDate && pet.sex && pet.breed && pet.weight && pet.species && pet.description && pet.image;
+    return pet.name && pet.birthDate && pet.sex && pet.breed && pet.weight && pet.species && pet.description;
   };
 
   return (

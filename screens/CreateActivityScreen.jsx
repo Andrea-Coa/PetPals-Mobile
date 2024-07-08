@@ -58,7 +58,7 @@ export default function CreateActivityScreen() {
       });
       console.log(localImage);
 
-    if (!activity.name || !activity.startDate || !activity.endDate || !activity.activityType || !activity.location.address || !activity.image) {
+    if (!activity.name || !activity.startDate || !activity.endDate || !activity.activityType || !activity.location.address) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }

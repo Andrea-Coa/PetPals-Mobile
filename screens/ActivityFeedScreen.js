@@ -20,6 +20,7 @@ const ActivityFeedScreen = () => {
   const [page, setPage] = useState(0);
   const [role, setRole] = useState(null);
   const [activityType, setActivityType] = useState("all");
+  const [totalPages, setTotalPages] = useState(0);
   const navigation = useNavigation();
   const isFocused = useIsFocused(); // Hook to check if screen is focused
   const image = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/rnhafgpvrssjyk2bufre?_a=DATAdtAAZAA0";
@@ -28,15 +29,25 @@ const ActivityFeedScreen = () => {
     try {
       if (type === "all") {
         const res = await fetchActivityInProgress(page);
-        setActivities(res.content);
+        setActivities(oldActivities => [...oldActivities, ...res.content]);
+        setTotalPages(res.totalPages);
       } else {
         const res = await fetchActivitiesByType(page, type);
-        setActivities(res.content);
+        setActivities(oldActivities => [...oldActivities, ...res.content]);
+        setTotalPages(res.totalPages);
+
       }
     } catch (error) {
       console.error('failed to fetch activities', error);
     }
   };
+  useEffect(() => {
+    setActivities([]);
+    setPage(0);
+  },[activityType]);
+
+console.log(totalPages);
+
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -45,6 +56,14 @@ const ActivityFeedScreen = () => {
     };
     fetchRole();
   }, []);
+
+
+  const handleLoadMore = () => {
+    if (page < totalPages) {
+      setPage(oldPage => oldPage + 1);
+    }
+  };
+
 
   useEffect(() => {
     if (isFocused) {
@@ -85,6 +104,8 @@ const ActivityFeedScreen = () => {
         <FlatList
           data ={activities}
           keyExtractor={(item)=> item.id.toString()}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
           renderItem={({item}) => (
             <TouchableOpacity onPress={() => {navigation.navigate('Evento', { id: item.id })}}>
               <View style={styles.itemBox}>
