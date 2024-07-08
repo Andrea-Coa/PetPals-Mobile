@@ -35,7 +35,18 @@ export default function LoginScreen({ navigation, route }) {
 
     } catch (error) {
       if (error.response) {
-        Alert.alert('Error', `Error: ${error.response.data.message || error.response.status}`);
+        // Handle specific error status codes
+        let errorMessage = 'Error:';
+        if (error.response.status === 403) {
+          errorMessage = 'Contraseña incorrecta';
+        } else if (error.response.status === 404) {
+          errorMessage = 'Correo no registrado';
+        } else {
+          errorMessage = `Error: ${error.response.data.message || error.response.status}`;
+        }
+    
+        // Show the alert with the specific error message
+        Alert.alert('Error', errorMessage);
         console.error('Error response:', error.response.data);
       } else if (error.request) {
         Alert.alert('Error', 'No response received from server');

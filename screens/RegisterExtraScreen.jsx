@@ -33,7 +33,14 @@ export default function RegisterExtraScreen({ route, navigation }) {
       }
     } catch (error) {
       if (error.response) {
-        Alert.alert('Error', `Error: ${error.response.data.message || error.response.status}`);
+        // Handle specific error status codes
+        let errorMessage = `Error: ${error.response.data.message || error.response.status}`;
+        if (error.response.status === 409) {
+          errorMessage = 'Correo ya registrado';
+        }
+    
+        // Show the alert with the specific error message
+        Alert.alert('Error', errorMessage);
         console.error('Error response:', error.response.data);
       } else if (error.request) {
         Alert.alert('Error', 'No response received from server');
