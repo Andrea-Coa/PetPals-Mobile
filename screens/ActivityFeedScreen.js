@@ -20,6 +20,7 @@ const ActivityFeedScreen = () => {
   const [page, setPage] = useState(0);
   const [role, setRole] = useState(null);
   const [activityType, setActivityType] = useState("all");
+  const [totalPages, setTotalPages] = useState(0);
   const navigation = useNavigation();
   const isFocused = useIsFocused(); // Hook to check if screen is focused
   const image = "https://res.cloudinary.com/dp7zuvv8c/image/upload/v1/PetPals/rnhafgpvrssjyk2bufre?_a=DATAdtAAZAA0";
@@ -52,11 +53,9 @@ const ActivityFeedScreen = () => {
     }
   }, [isFocused, page, activityType]);
 
-  console.log(activities);
-
   return (
     <ImageBackground source={require("../assets/dog_bg.png")} style={{ flex: 1 }}>
-      {role === 'ROLE_COMPANY' && (
+      {role == 'ROLE_COMPANY' && (
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateActivity')}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="create" size={24} color="white" />

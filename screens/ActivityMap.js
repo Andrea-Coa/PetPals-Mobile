@@ -7,7 +7,8 @@ const windowWidth = Dimensions.get('window').width;
 const petLocationIcon = require("../assets/pet-location.png");
 
 const ActivityMap = ({ coordinates }) => {
-  const [userLocation, setUserLocation] = useState({});
+  // algo causa un error a veces
+  const [userLocation, setUserLocation] = useState({latitude:0, longitude:0});
   const activityLocation = { latitude: coordinates.latitude, longitude: coordinates.longitude };
 
   const getPermissions = async () => {
@@ -54,7 +55,7 @@ const ActivityMap = ({ coordinates }) => {
             style={{ height: 40, width: 40 }}
           />
         </Marker>
-        {userLocation.latitude && <Marker
+        {userLocation.latitude != null && <Marker
           coordinate={userLocation}
           title="ME"
         />}

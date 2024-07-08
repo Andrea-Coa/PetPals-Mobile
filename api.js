@@ -2,7 +2,7 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = 'http://192.168.1.6:8080'; //Cambiar por tu ip
+const API_URL = 'http://192.168.1.48:8080'; //Cambiar por tu ip
 
 export const getRoleBasedOnToken = async () => {
   try {
@@ -162,7 +162,7 @@ export const updateCompanyProfile = async (name) => {
 
 export const fetchPetsDefault = async (page) => {
   const token = await SecureStore.getItemAsync('token');
-    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=20`, {
+    const response = await axios.get(`${API_URL}/pets/inAdoption?page=${page}&size=100`, {
       headers: {
         'Authorization':`Bearer ${token}`,
       },
@@ -173,7 +173,7 @@ export const fetchPetsDefault = async (page) => {
 
 export const fetchPetsSpecies = async(page, species) => {
   const token = await SecureStore.getItemAsync('token');
-  const response = await axios.get(`${API_URL}/pets/species/${species}?page=${page}&size=20`, {
+  const response = await axios.get(`${API_URL}/pets/species/${species}?page=${page}&size=100`, {
     headers: {
       'Authorization':`Bearer ${token}`,
     },

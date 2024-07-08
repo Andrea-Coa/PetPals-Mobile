@@ -13,40 +13,42 @@ export const PetFeedScreen = () => {
     const [species, setSpecies] = useState("todos");
     const [page, setPage] = useState(0);
     const [role, setRole] = useState(null);
+    const [totalPages, setTotalPages] = useState(0);
     const navigation = useNavigation();
 
     useEffect(()=> {
-        const getPetsDefault = async() => {
-            if (species != "todos") {
-              try {
-                const res = await fetchPetsSpecies(page, species);
-                setPets(res.content);
-              } catch (error ) {
-                console.error('FAILED TO FETCH BY SPECIES', error);
-              }
+      const getPetsDefault = async() => {
+          if (species != "todos") {
+            try {
+              const res = await fetchPetsSpecies(page, species);
+              setPets(res.content);
+            } catch (error ) {
+              console.error('FAILED TO FETCH BY SPECIES', error);
             }
-            else {
-              try {
-                const res = await fetchPetsDefault(page);
-                console.log("dshfajd", res);
-                setPets(res.content);
-            } catch(error) {
-                console.error('FAILED TO FETCH PETS');
-              }
-            } 
-            
-        };
-        const fetchRole = async () => {
-          const roleFromToken = await getRoleBasedOnToken();
-          setRole(roleFromToken);
-        };
-        fetchRole();
-        getPetsDefault();
-    }, [species]);
+          }
+          else {
+            try {
+              const res = await fetchPetsDefault(page);
+              console.log("dshfajd", res);
+              setPets(res.content);
+          } catch(error) {
+              console.error('FAILED TO FETCH PETS');
+            }
+          } 
+          
+      };
+      const fetchRole = async () => {
+        const roleFromToken = await getRoleBasedOnToken();
+        setRole(roleFromToken);
+      };
+      fetchRole();
+      getPetsDefault();
+  }, [species]);
 
-    console.log('SPECIES', species);
+  console.log('SPECIES', species);
 
-    console.log("from feed:",role);
+  console.log("from feed:",role);
+
     return (
         <ImageBackground source={require("../assets/huella-perro.png")} style={{flex:1}}>
           <SafeAreaView style={styles.container}>
